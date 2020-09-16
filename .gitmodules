@@ -1,0 +1,3 @@
+[submodule "content"]
+	path = content
+	url = http://git.enotogorsk.ru/fennica-content.git/

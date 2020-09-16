@@ -1,0 +1,19 @@
+Remaining features
+------------------
+
+* Places index
+* POIs with multiple points
+* POIs with polylines?
+* Probably POIs display improvement (sidebar etc.)
+
+Optimization (when needed)
+--------------------------
+
+* Basic optimization could probably be saving the project state (with all preloaded content etc.)
+  into a JSON file and reloading it on startup (and checking that existing files are not newer than this JSON)
+
+Other points
+------------
+
+* Should the generator be a separate project?  Will bring a lot of complexity.  Code cleanup, tests
+  will be necessary
