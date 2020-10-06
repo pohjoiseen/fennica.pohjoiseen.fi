@@ -99,17 +99,17 @@ export const Layout = (props: LayoutProps) => {
             <h1 className="main-title"><img alt="logo" src="/static/sight-icon.png" /><span>Encyclopaedia</span> <span>Fennica</span></h1>
             <div className="note">Beta</div>
         </a>
-        {false && <nav>
-            <a href={`/${lang}/map/espoo/`} className={activeHeaderLink === 'maps' ? 'active' : ''}>{_('Maps', lang)}</a>
-            &nbsp;|&nbsp;
-            <a href={`/${lang}/place/`} className={activeHeaderLink === 'pois' ? 'active' : ''}>{_('Places', lang)}</a>
-            <hr />
-            <a href={`/${lang}/article/`} className={activeHeaderLink === 'articles' ? 'active' : ''}>{_('Articles', lang)}</a>
-            &nbsp;|&nbsp;
-            <a href={`/${lang}/`} className={activeHeaderLink === 'posts' ? 'active' : ''}>{_('Blog', lang)}</a>
-            &nbsp;|&nbsp;
-            <a href={`/${lang}/article/${ABOUT_ARTICLE}/`} className={activeHeaderLink === 'about' ? 'active' : ''}>{_('About', lang)}</a>
-        </nav>}
+       {/* <nav> 
+            <a href={`/${lang}/map/`} className={activeHeaderLink === 'maps' || activeHeaderLink === 'pois' ? 'active' : ''}>{_('Map', lang)}</a> */}
+            {/* &nbsp;|&nbsp;
+            <a href={`/${lang}/place/`} className={activeHeaderLink === 'pois' ? 'active' : ''}>{_('Places', lang)}</a> */}
+        {/*    <hr /> */}
+            {/* <a href={`/${lang}/article/`} className={activeHeaderLink === 'articles' ? 'active' : ''}>{_('Articles', lang)}</a> 
+            &nbsp;|&nbsp; */}
+        {/* <a href={`/${lang}/`} className={activeHeaderLink === 'posts' ? 'active' : ''}>{_('Blog', lang)}</a> */}
+            {/* &nbsp;|&nbsp;
+            <a href={`/${lang}/article/${ABOUT_ARTICLE}/`} className={activeHeaderLink === 'about' ? 'active' : ''}>{_('About', lang)}</a> */}
+        {/* </nav> */}
         <nav>
             {languageVersions['en']
                 ? <a href={languageVersions['en']} className={lang === 'en' ? 'active' : ''}>ENG</a>

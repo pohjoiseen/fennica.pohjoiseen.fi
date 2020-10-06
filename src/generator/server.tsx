@@ -68,9 +68,10 @@ export const runServer = () => {
     app.use(webpackDevMiddleware(compiler, {publicPath: '/static', index: false, serverSideRender: true}));
 
     // Map pages
-    app.get('/:lang/map/:name/', (req, res) => {
-        if (mapContent[req.params.lang] && mapContent[req.params.lang][req.params.name]) {
-            const map = mapContent[req.params.lang][req.params.name];
+    app.get('/:lang/map/:name?/', (req, res) => {
+        const name = req.params.name || 'index';
+        if (mapContent[req.params.lang] && mapContent[req.params.lang][name]) {
+            const map = mapContent[req.params.lang][name];
             res.setHeader('Content-Type', 'text/html; charset=utf-8');
             res.send(renderPage(<MapPage lang={req.params.lang} map={map} bundlePath="/static/bundle.js" />));
         }

@@ -40,7 +40,7 @@ initStaticDir();
 initImages().then(() => {
 
     // Load/build content
-    initContent();
+    initContent(!watchMode);
 
     console.log(chalk.greenBright('Loading/asset initialization complete'));
 

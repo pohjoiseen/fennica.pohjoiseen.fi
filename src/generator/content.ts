@@ -488,6 +488,7 @@ const poisToGeoJSON = (pois: {[path: string]: POI}): FeatureCollection[] => {
                 type: poi.data.type,
                 title: poi.data.title,
                 customIcon: poi.data.customIcon,
+                customIconSize: poi.data.customIconSize
             }
         });
     }
@@ -607,27 +608,75 @@ const outputPOIs = (lang: string) => {
 }
 
 /**
+ * Removes all content marked as draft.
+ * 
+ * @param {string} lang 
+ */
+const trimDrafts = (lang: string) => {
+    if (mapContent[lang]) {
+        for (let map of Object.values(mapContent[lang])) {
+            if (map.data.draft) {
+                delete mapContent[lang][map.name];
+                delete contentMap[lang].maps[map.name];
+            }
+        }
+    }
+    if (poiContent[lang]) {
+        for (let poi of Object.values(poiContent[lang])) {
+            if (poi.data.draft) {
+                delete poiContent[lang][poi.name];
+                delete contentMap[lang].pois[poi.name];
+            }
+        }
+    }
+    if (postContent[lang]) {
+        for (let post of Object.values(postContent[lang])) {
+            if (post.data.draft) {
+                delete postContent[lang][post.name];
+                delete contentMap[lang].posts[post.name];
+            }
+        }
+    }
+    if (articleContent[lang]) {
+        for (let article of Object.values(articleContent[lang])) {
+            if (article.data.draft) {
+                delete articleContent[lang][article.name];
+                delete contentMap[lang].articles[article.name];
+            }
+        }
+    }
+}
+
+/**
  * Scans and loads all content, writes out POI JSONs.
  */
-export const initContent = () => {
+export const initContent = (shouldTrimDrafts: boolean) => {
+    // Scan for stuff
     console.log(`Initializing step: ${chalk.greenBright('scanning for content')}`);
     scanContent();
     for (let lang of LANGUAGES) {
         if (contentMap[lang]) {
+            // Load stuff
+            console.log(`Initializing step: ${chalk.greenBright('loading articles for language ' + lang)}`);
+            preloadArticles(lang);
+            console.log(`Initializing step: ${chalk.greenBright('loading posts for language ' + lang)}`);
+            preloadPosts(lang);
             console.log(`Initializing step: ${chalk.greenBright('loading POIs for language ' + lang)}`);
             preloadPOIs(lang);
             console.log(`Initializing step: ${chalk.greenBright('loading maps for language ' + lang)}`);
             preloadMaps(lang);
+            // Remove unneccessary stuff
+            if (shouldTrimDrafts) {
+                console.log(`Initializing step: ${chalk.greenBright('removing drafts for language ' + lang)}`);
+                trimDrafts(lang);
+            }
+            // Build up various stuff indices
             console.log(`Initializing step: ${chalk.greenBright('building map data for POIs for language ' + lang)}`);
             generateGeoJSONForPOIs(lang);
             console.log(`Initializing step: ${chalk.greenBright('building map data for maps for language ' + lang)}`);
             generateGeoJSONForMaps(lang);
             console.log(`Initializing step: ${chalk.greenBright('writing out JSON data for POIs for language ' + lang)}`);
             outputPOIs(lang);
-            console.log(`Initializing step: ${chalk.greenBright('loading articles for language ' + lang)}`);
-            preloadArticles(lang);
-            console.log(`Initializing step: ${chalk.greenBright('loading posts for language ' + lang)}`);
-            preloadPosts(lang);
             orderPosts(lang);
         }
     }

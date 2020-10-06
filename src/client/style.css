@@ -458,7 +458,6 @@ footer p a {
 
 .map-fullsize {
   width: 100%;
-  height: 100%;
   position: relative;
 }
 
@@ -475,7 +474,7 @@ footer p a {
   background: none !important;
   border: none !important;
   color: #444;
-  text-shadow: #000 0 0 3px;
+  text-shadow: #000 0 0 3px, #000 0 0 3px, #000 0 0 3px;
   font-size: 20px;
 }
 
@@ -525,6 +524,7 @@ footer p a {
 
 .body-map > div {
   flex-grow: 1;
+  display: flex;
 }
 
 .map-side-pane {
@@ -569,6 +569,11 @@ footer p a {
   margin: 0;
 }
 
+.map-side-pane figure {
+  left: auto;
+  width: auto;
+}
+
 .body-map footer {
   display: none;
 }
@@ -597,7 +602,7 @@ footer p a {
   grid-template-columns: 33% auto;
   grid-template-rows: auto auto auto auto 100%;
   align-items: start;
-  column-gap: 20px;
+  column-gap: 40px;
 }
 
 .poi-logo {
@@ -654,9 +659,14 @@ h1.poi-title {
   grid-row-end: span 2;
 }
 
+.poi-map-and-data p {
+  margin: 10px auto;
+}
+
 .poi-main {
   grid-column: 2;
   grid-row: 5;
+  min-width: 0;
 }
 
 .poi-main h2, .poi-main h3 {
@@ -664,6 +674,12 @@ h1.poi-title {
   color: #fff;
   border-bottom: 1px solid #888;
   margin-top: 20px;
+}
+
+.poi-main figure {
+  width: auto;
+  left: auto;
+  max-width: 100%;
 }
 
 /* Mobile */

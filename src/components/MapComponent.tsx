@@ -141,7 +141,7 @@ export const MapComponent = (props: MapComponentProps) => {
                         icon: geoJsonPoint.properties.customIcon
                             ? new L.Icon({
                                 iconUrl: geoJsonPoint.properties.customIcon,
-                                iconSize: [50, 50],
+                                iconSize: geoJsonPoint.properties.customIconSize || [50, 50],
                                 className: 'custom-icon',
                             })
                             : ICONS[geoJsonPoint.properties.type],

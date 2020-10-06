@@ -50,17 +50,15 @@ export const PlacePage = (props: PlacePageProps) => {
             </div>
             <aside className="poi-map-and-data">
                 {ssrComponent('miniMapView', {lang, poiData: poi.data, mapData: map.data, geoJSONs: poi.geoJSONs})}
-                <p>
-                    {poi.data.seasonDescription &&
-                    <><b>{_('Season', lang)}</b>: <span dangerouslySetInnerHTML={{__html: poi.data.seasonDescription}} /><br/></>}
-                    {poi.data.accessDescription &&
-                    <><b>{_('Access', lang)}</b>: <span dangerouslySetInnerHTML={{__html: poi.data.accessDescription}} /><br/></>}
-                    {poi.data.more && <>
-                        {Object.keys(poi.data.more).map(item => <Fragment key={item}>
-                            <b>{_(item, lang)}</b>: <span dangerouslySetInnerHTML={{__html: poi.data.more![item]}} /><br/>
-                        </Fragment>)}
-                    </>}
-                </p>
+                {poi.data.seasonDescription &&
+                <p><b>{_('Season', lang)}</b>: <span dangerouslySetInnerHTML={{__html: poi.data.seasonDescription}} /><br/></p>}
+                {poi.data.accessDescription &&
+                <p><b>{_('Access', lang)}</b>: <span dangerouslySetInnerHTML={{__html: poi.data.accessDescription}} /><br/></p>}
+                {poi.data.more && <>
+                    {Object.keys(poi.data.more).map(item => <p key={item}>
+                        <b>{_(item, lang)}</b>: <span dangerouslySetInnerHTML={{__html: poi.data.more![item]}} />
+                    </p>)}
+                </>}
                 {poi.data.externalLinks && <>
                     <p><b>{_('Links', lang)}:</b></p>
                     <ul>

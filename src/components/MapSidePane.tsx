@@ -1,7 +1,7 @@
 /**
  * <MapSidePane>: Side pane for the map page, displaying either map's own markdown page or selected POI preview.
  */
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, Fragment} from 'react';
 import ReactImageGallery from 'react-image-gallery';
 import {POI} from '../contentTypes';
 import _ from '../l10n';
@@ -62,7 +62,12 @@ export const MapSidePane = (props: MapSidePaneProps) => {
                                     items={poi.galleryPrepared}
                                     showPlayButton={false} showBullets={true} showIndex={true}
                                 />}
-                                <div dangerouslySetInnerHTML={{__html: poi.data.description}} />
+                                <div><strong dangerouslySetInnerHTML={{__html: poi.data.description}} /></div>
+                                <hr />
+                                {poi.data.seasonDescription &&
+                                    <><b>{_('Season', lang)}</b>: <span dangerouslySetInnerHTML={{__html: poi.data.seasonDescription}} /><br/></>}
+                                {poi.data.accessDescription &&
+                                    <><b>{_('Access', lang)}</b>: <span dangerouslySetInnerHTML={{__html: poi.data.accessDescription}} /><br/></>}
                                 <p><a href={`/${lang}/place/${poiSelected}/`}>{_('Continue reading', lang)}</a></p>
                             </div>
                     }

@@ -53,7 +53,7 @@ export const runGenerator = () => {
             if (mapContent[lang]) {
                 console.log(`Generating step: ${chalk.greenBright(`outputting maps for language ${lang}`)}`);
                 for (let map of Object.values(mapContent[lang])) {
-                    const outpath = `/${lang}/map/${map.name}/`;
+                    const outpath = map.name === 'index' ? `/${lang}/map/` : `/${lang}/map/${map.name}/`;
                     outputPage(<MapPage lang={lang} map={map} bundlePath={bundlePath} cssPath={cssPath} />, outpath);
                 }
             }

@@ -30,6 +30,8 @@ export const getLanguageVersionURLs = (name: string, type: 'maps' | 'pois' | 'ar
         if (contentMap[lang] && contentMap[lang][type][name]) {
             if (type === 'posts') {
                 result[lang] = getPostLink(name, lang);
+            } else if (name === 'index') {
+                result[lang] = `/${lang}/${pathMap[type]}/`;
             } else {
                 result[lang] = `/${lang}/${pathMap[type]}/${name}/`
             }
@@ -119,7 +121,7 @@ export const renderFeed = (lang: string, posts: Post[]) => {
         });
         content = $.html().replace(/^<html><head><\/head><body>/, '').replace(/<\/body><\/html>/, '');
         if (cutIndex !== -1) {
-            content += `<p><a href="${url}>${_('Continue reading', lang)}</a></p>`;
+            content += `<p><a href="${url}">${_('Continue reading', lang)}</a></p>`;
         }
         
         feed.addItem({

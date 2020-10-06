@@ -17,6 +17,7 @@ export interface MapDefinition {
     mapSubdomains?: string[];
     mapAttribution: string;
     poiTypes?: string[];
+    draft?: boolean;
 }
 
 export interface Map {
@@ -41,6 +42,7 @@ export interface POIDefinition {
     zoom: number;
     minZoom?: number;
     customIcon?: string;
+    customIconSize?: [number, number];
     season: string;
     seasonDescription: string;
     access: string;
@@ -49,6 +51,7 @@ export interface POIDefinition {
     externalLinks?: {[title: string]: string};
     gallery?: (string | {url: string, title?: string})[];
     updated: string;
+    draft?: boolean;
 }
 
 export interface POI {
@@ -67,6 +70,7 @@ export interface ArticleDefinition {
     prev?: string;
     next?: string;
     updated: string;
+    draft?: boolean;
 }
 
 export interface Article {
@@ -84,6 +88,7 @@ export interface PostDefinition {
     titleImageOffsetY?: number;
     titleImage?: string;
     titleDate?: string;
+    draft?: boolean;
 }
 
 export interface Post {
