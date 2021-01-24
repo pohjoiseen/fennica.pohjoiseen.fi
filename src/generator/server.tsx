@@ -84,18 +84,19 @@ export const runServer = () => {
 
             // find out mini-map to display
             let owningMap = 'index';
-            if (poi.data.topLevelInMap) {
-                if (typeof poi.data.topLevelInMap === 'string') {
-                    owningMap = poi.data.topLevelInMap;
+            if (poi.data.map) {
+                if (typeof poi.data.map === 'string') {
+                    owningMap = poi.data.map;
                 } else {
-                    owningMap = poi.data.topLevelInMap[0];
+                    owningMap = poi.data.map[0];
                 }
             }
             const map = mapContent[req.params.lang][owningMap];
+            const parent = poi.data.parent ? poiContent[req.params.lang][poi.data.parent] : undefined;
             res.setHeader('Content-Type', 'text/html; charset=utf-8');
             res.send(renderPage(<PlacePage
                 lang={req.params.lang}
-                poi={poi} map={map}
+                poi={poi} map={map} parent={parent}
                 bundlePath="/static/bundle.js"
             />));
         }

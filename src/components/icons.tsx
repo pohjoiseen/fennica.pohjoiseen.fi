@@ -19,6 +19,18 @@ export const ICONS: {[type: string]: Icon | DivIcon} = {
         iconAnchor: [10, 22],
         popupAnchor: [0, -11],
     }),
+    trailhead:  L.divIcon({
+        html: '<i class="fas fa-hiking" style="color: #fff;"></i>',
+        iconSize: [22, 22],
+        iconAnchor: [10, 22],
+        popupAnchor: [0, -11],
+    }), 
+    museum:  L.divIcon({
+        html: '<i class="fas fa-landmark" style="color: #fff;"></i>',
+        iconSize: [22, 22],
+        iconAnchor: [10, 22],
+        popupAnchor: [0, -11],
+    }), 
     island: L.divIcon({
         html: '<i class="fas fa-flag" style="color: #66c;"></i>',
         iconSize: [22, 22],

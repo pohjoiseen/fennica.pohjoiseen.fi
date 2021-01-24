@@ -26,6 +26,7 @@ export interface MapComponentProps {
     mapSubdomains?: string[];
     mapAttribution: string;
     pois: FeatureCollection[];
+    subPois: FeatureCollection[] | undefined;
     onMove?: (centerLat: number, centerLng: number, zoom: number) => void;
     onPoiSelect?: (name: string, title: string) => void;
     onPoiDeselect?: () => void;
@@ -64,9 +65,10 @@ export const MapComponent = (props: MapComponentProps) => {
     for (let k = 0; k < 16; k++) {
         poiRefs.push(useRef<GeoJSON>()!);
     }
+    const subpoiRef: any = useRef<GeoJSON>();  // FIXME: type?
     const [state, setState] = useState<MapComponentState>({initialized: false});
     const {lang, fullscreen, popups, centerLat, zoom, mapSource, minZoom, maxZoom,
-        mapAttribution, mapSubdomains, pois, onMove, onPoiSelect, onPoiDeselect} = props;
+        mapAttribution, mapSubdomains, pois, subPois, onMove, onPoiSelect, onPoiDeselect} = props;
     let {centerLng} = props;
 
     const shiftForOverlay = fullscreen && window.innerWidth >= MAP_SIDE_PANE_MIN_VIEWPORT_WIDTH;
@@ -156,6 +158,25 @@ export const MapComponent = (props: MapComponentProps) => {
                     }
                 }}/>
             })}
+            {subPois && <GeoJSON data={subPois} ref={subpoiRef} pointToLayer={(geoJsonPoint, latlng) => {
+                const marker = new L.Marker(latlng, {
+                    icon: geoJsonPoint.properties.customIcon
+                        ? new L.Icon({
+                            iconUrl: geoJsonPoint.properties.customIcon,
+                            iconSize: geoJsonPoint.properties.customIconSize || [50, 50],
+                            className: 'custom-icon',
+                        })
+                        : ICONS[geoJsonPoint.properties.type],
+                });
+                if (onPoiSelect) {
+                    marker.on('click' as any, handleMarkerClick);
+                }
+                return marker;
+            }} onEachFeature={(feature, layer) => {
+                if (popups) {
+                    layer.bindPopup(`<h4><a href="/${lang}/place/${feature.id}/">${feature.properties.title}</a></h4>`);
+                }
+            }} />}
         </Map>
     </Fragment>;
 }

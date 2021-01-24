@@ -64,18 +64,19 @@ export const runGenerator = () => {
                 for (let poi of Object.values(poiContent[lang])) {
                     // find out mini-map to display
                     let owningMap = 'index';
-                    if (poi.data.topLevelInMap) {
-                        if (typeof poi.data.topLevelInMap === 'string') {
-                            owningMap = poi.data.topLevelInMap;
+                    if (poi.data.map) {
+                        if (typeof poi.data.map === 'string') {
+                            owningMap = poi.data.map;
                         } else {
-                            owningMap = poi.data.topLevelInMap[0];
+                            owningMap = poi.data.map[0];
                         }
                     }
                     const map = mapContent[lang][owningMap];
+                    const parent = poi.data.parent ? poiContent[lang][poi.data.parent] : undefined;
                     const outpath = `/${lang}/place/${poi.name}/`;
                     outputPage(<PlacePage
                         lang={lang}
-                        poi={poi} map={map}
+                        poi={poi} map={map} parent={parent}
                         bundlePath={bundlePath} cssPath={cssPath}
                     />, outpath);
                 }

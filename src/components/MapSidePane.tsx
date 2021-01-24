@@ -1,45 +1,23 @@
 /**
  * <MapSidePane>: Side pane for the map page, displaying either map's own markdown page or selected POI preview.
  */
-import React, {useEffect, useState, Fragment} from 'react';
+import React from 'react';
 import ReactImageGallery from 'react-image-gallery';
 import {POI} from '../contentTypes';
 import _ from '../l10n';
 
 export interface MapSidePaneProps {
+    loading: boolean;
+    loadingError: boolean;
     lang: string;
     content: string;
     poiSelected: string | undefined;
     poiSelectedTitle: string | undefined;
-}
-interface MapSidePaneState {
-    loading: boolean;
-    loadingError: boolean;
-    poiDisplayed: string | null;
     poi: POI | null;
 }
 
 export const MapSidePane = (props: MapSidePaneProps) => {
-    const {content, lang, poiSelected, poiSelectedTitle} = props;
-    const [state, setState] = useState<MapSidePaneState>({loading: false, loadingError: false, poiDisplayed: null, poi: null});
-    const {loading, loadingError, poiDisplayed, poi} = state;
-
-    // handle loading of pane data from statically generated JSONs
-    useEffect(() => {
-        if (poiDisplayed !== poiSelected && poiSelected && !loading) {
-            const fetchFunction = async () => {
-                setState({...state, loading: true});
-                try {
-                    const response = await fetch(`/${lang}/place/${poiSelected}.json`);
-                    const json = await response.json();
-                    setState({...state, poiDisplayed: poiSelected, poi: json});
-                } catch (e) {
-                    setState({...state, loading: false, loadingError: true});
-                }
-            }
-            fetchFunction();
-        }
-    });
+    const {content, lang, poiSelected, poiSelectedTitle, loading, loadingError, poi} = props;
 
     return <div className="map-side-pane">
         <div className="map-side-pane-inner">
@@ -64,6 +42,8 @@ export const MapSidePane = (props: MapSidePaneProps) => {
                                 />}
                                 <div><strong dangerouslySetInnerHTML={{__html: poi.data.description}} /></div>
                                 <hr />
+                                {poi.data.address &&
+                                    <><b>{_('Address', lang)}</b>: <span dangerouslySetInnerHTML={{__html: poi.data.address}} /><br/></>}
                                 {poi.data.seasonDescription &&
                                     <><b>{_('Season', lang)}</b>: <span dangerouslySetInnerHTML={{__html: poi.data.seasonDescription}} /><br/></>}
                                 {poi.data.accessDescription &&

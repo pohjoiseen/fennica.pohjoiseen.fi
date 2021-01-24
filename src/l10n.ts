@@ -14,6 +14,7 @@ const strings: {[lang: string]: {[key: string]: string}} = {
         "Blog": "Блог",
         "Articles": "Статьи",
         "About": "О сайте",
+        "Address": "Адрес",
         "Access": "Доступ",
         "Season": "Сезон",
         "Links": "Ссылки",
@@ -58,7 +59,6 @@ const strings: {[lang: string]: {[key: string]: string}} = {
         "conservation_status": "Conservation status",
         "nature": "Nature",
         "sights": "Sights",
-        "tickets": "Tickets",
         "car_access": "Car access",
         "accommodation": "Accommodation",
         "tourist_infrastructure": "Tourist infrastructure",
@@ -79,9 +79,14 @@ const strings: {[lang: string]: {[key: string]: string}} = {
         "huts": "Huts",
         "services": "Services",
         "connecting_trails": "Connecting trails",
+        "parking_spots": "Parking places",
+        "entry_fee": "Ticket fee (non-discounted adult)",
+        "museum_card": "Museum card valid",
         "type-city": "City",
         "type-national-park": "National park",
         "type-urbanarea-major": "Urban area",
+        "type-trailhead": "Trailhead",
+        "type-museum": "Museum",
     }
 };
 

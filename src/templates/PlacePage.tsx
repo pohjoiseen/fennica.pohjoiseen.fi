@@ -2,7 +2,6 @@
  * <PlacePage>: static place page.
  */
 import * as React from 'react';
-import {Fragment} from 'react';
 import {POI, Map} from '../contentTypes';
 import {Layout} from './Layout';
 import {getLanguageVersionURLs} from '../generator/util';
@@ -15,11 +14,12 @@ export interface PlacePageProps {
     bundlePath: string;
     cssPath?: string;
     poi: POI;
+    parent?: POI;
     map: Map;
 }
 
 export const PlacePage = (props: PlacePageProps) => {
-    const {lang, bundlePath, cssPath, poi, map} = props;
+    const {lang, bundlePath, cssPath, poi, parent, map} = props;
 
     return <Layout
         title={poi.data.title}
@@ -35,9 +35,12 @@ export const PlacePage = (props: PlacePageProps) => {
                 {poi.data.customIcon ? <img className="custom-icon" src={poi.data.customIcon} height="80" /> : null}
             </div>
             <h1 className="poi-title">{poi.data.title}</h1>
-            <p className="poi-subtitle">{poi.data.subtitle
-                ? `${_(`type-${poi.data.type}`, lang)} &bullet; ${poi.data.subtitle}`
-                : _(`type-${poi.data.type}`, lang)}</p>
+            <p className="poi-subtitle">
+                {parent && <><a href={`/${lang}/place/${parent.name}/`}>&#8592; {parent.data.title}</a> &bullet; </>}
+                {poi.data.subtitle
+                    ? `${_(`type-${poi.data.type}`, lang)} &bullet; ${poi.data.subtitle}`
+                    : _(`type-${poi.data.type}`, lang)}
+            </p>
             <hr />
             <div className="poi-description">
                 {poi.galleryPrepared && ssrComponent('reactImageGallery', {
@@ -50,6 +53,8 @@ export const PlacePage = (props: PlacePageProps) => {
             </div>
             <aside className="poi-map-and-data">
                 {ssrComponent('miniMapView', {lang, poiData: poi.data, mapData: map.data, geoJSONs: poi.geoJSONs})}
+                {poi.data.address &&
+                <p><b>{_('Address', lang)}</b>: <span dangerouslySetInnerHTML={{__html: poi.data.address}} /><br/></p>}
                 {poi.data.seasonDescription &&
                 <p><b>{_('Season', lang)}</b>: <span dangerouslySetInnerHTML={{__html: poi.data.seasonDescription}} /><br/></p>}
                 {poi.data.accessDescription &&
@@ -67,7 +72,7 @@ export const PlacePage = (props: PlacePageProps) => {
                 </>}
             </aside>
             <article className="poi-main">
-                <hr />
+                {poi.galleryPrepared && <hr />}
                 <Content content={poi.content} lang={lang} />
                 {poi.data.updated && <p><i>{_('Up to date as of', lang)}: {poi.data.updated}</i></p>}
             </article>

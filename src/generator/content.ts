@@ -1,5 +1,7 @@
 /**
  * Generation of content from Markdown files.
+ * 
+ * This is where most heavy lifting actually happens.
  */
 import * as fs from 'fs';
 import * as path from 'path';
@@ -42,7 +44,7 @@ const poiPathIndex: {[lang: string]: {[path: string]: POI}} = {};
 // Blog posts ordered by date
 export const postsOrdered: {[lang: string]: string[]} = {};
 
-// Loaded content
+// "Database" of loaded content
 export const poiContent: {[lang: string]: {[name: string]: POI}} = {};
 export const mapContent: {[lang: string]: {[name: string]: Map}} = {};
 export const articleContent: {[lang: string]: {[name: string]: Article}} = {};
@@ -287,8 +289,9 @@ const formatPOI = (poi: POI, lang: string) => {
     poi.content = formatText(poi.content, lang, basepath, true);
     poi.data.subtitle = poi.data.subtitle ? formatText(poi.data.subtitle, lang, basepath) : undefined;
     poi.data.description = formatText(poi.data.description, lang, basepath);
-    poi.data.seasonDescription = formatText(poi.data.seasonDescription, lang, basepath);
-    poi.data.accessDescription = formatText(poi.data.accessDescription, lang, basepath);
+    poi.data.address = poi.data.address ? formatText(poi.data.address, lang, basepath) : undefined;
+    poi.data.seasonDescription = poi.data.seasonDescription ? formatText(poi.data.seasonDescription, lang, basepath) : undefined;
+    poi.data.accessDescription = poi.data.accessDescription ? formatText(poi.data.accessDescription, lang, basepath) : undefined;
     if (poi.data.more) {
         for (let key of Object.keys(poi.data.more)) {
             poi.data.more[key] = formatText(poi.data.more[key], lang, basepath);
@@ -510,7 +513,7 @@ const generateGeoJSONForMap = (mapName: string, lang: string) => {
     } else {
         // add all POIs that are explicitly specified as top level for this map.  Also make them display at all zoom levels
         for (let [path, poi] of Object.entries(poiPathIndex[lang])) {
-            let topLevelInMap = poi.data.topLevelInMap;
+            let topLevelInMap = poi.data.map;
             if (typeof topLevelInMap === 'string') {
                 topLevelInMap = [topLevelInMap];
             }
@@ -523,14 +526,6 @@ const generateGeoJSONForMap = (mapName: string, lang: string) => {
             for (let [path, poi] of Object.entries(poiPathIndex[lang])) {
                 if (mapDefinition.poiTypes.includes(poi.data.type)) {
                     targetPois[path] = poi;
-                }
-            }
-        }
-        // add all children of these top-level POIs
-        for (let parentPath of Object.keys(targetPois)) {
-            for (let childPath of Object.keys(poiPathIndex[lang])) {
-                if (childPath.startsWith(parentPath + '/') && !targetPois[childPath]) {
-                    targetPois[childPath] = poiPathIndex[lang][childPath];
                 }
             }
         }
@@ -558,11 +553,19 @@ const generateGeoJSONForMaps = (lang: string) => {
  */
 const generateGeoJSONForPOI = (poiName: string, lang: string) => {
     const poiDefinition = poiContent[lang][poiName].data;
+    
+    // if this POI has a parent, look not for children but for siblings
+    let parentPoiName = poiName;
+    if (poiDefinition.parent) {
+        parentPoiName = poiDefinition.parent;
+    }
 
-    const poiPath = Object.keys(poiPathIndex[lang]).find(poiPath => poiPathIndex[lang][poiPath].name === poiName);
+    const poiPath = Object.keys(poiPathIndex[lang]).find(poiPath => poiPathIndex[lang][poiPath].name === parentPoiName);
+    
+    // always add self
     let targetPois: {[path: string]: POI} = {[poiPath!]: poiPathIndex[lang][poiPath!]};
 
-    // add all children of this POIs
+    // add all siblings/children of this POIs
     if (poiPath) {
         for (let childPath of Object.keys(poiPathIndex[lang])) {
             if (childPath.startsWith(poiPath + '/') && !targetPois[childPath]) {
