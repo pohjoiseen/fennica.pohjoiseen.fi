@@ -46,7 +46,9 @@ export const Content = ({content, lang, cut}: ContentProps) => {
             // correctly resolved and .1x version is substituted.  So we have a bit of a hack to go back to the
             // original file
             $('img').each((k, el) => {
-                items.push({url: '.' + el.attribs.src.replace(/.1x.([^.]+)$/, '.$1'), title: el.attribs.alt});
+                if (el.type === 'tag') {  // always true, make TS happy
+                    items.push({url: '.' + el.attribs.src.replace(/.1x.([^.]+)$/, '.$1'), title: el.attribs.alt});
+                }
             });
             result.push(ssrComponent('reactImageGallery', {
                 items: prepareGalleryItems(items, getContentDir()),

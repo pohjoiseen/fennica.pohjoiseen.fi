@@ -19,7 +19,7 @@ import {
     mapContent,
     poiContent, postContent, postsOrdered
 } from './content';
-import {DEVSERVER_PORT, POSTS_PER_PAGE} from '../const';
+import {DEVSERVER_PORT, LANGUAGES, POSTS_PER_PAGE} from '../const';
 import {renderFeed, renderPage} from './util';
 import {MapPage} from '../templates/MapPage';
 import {PlacePage} from '../templates/PlacePage';
@@ -60,7 +60,6 @@ export const runServer = () => {
 
     // Server
     const app = express();
-    app.use(express.static(getBuildDir()));
     app.use(morgan('dev'));
 
     // Webpack
@@ -129,8 +128,13 @@ export const runServer = () => {
     });
 
     // Blog pages
-    app.get('/:lang/:page(\\d+)?/', (req, res) => {
+    app.get('/:lang/:page(\\d+)?/', (req, res, next) => {
         const page = Number(req.params.page) || 1, lang = req.params.lang;
+        // this route will also catch something like /favicon.ico, make sure it's really a valid language
+        if (!LANGUAGES.includes(lang)) {
+            next();
+            return;
+        }
         const totalPages = Math.ceil(postsOrdered[lang].length / POSTS_PER_PAGE);
         if (page >= 1 && page <= totalPages) {
             const posts = postsOrdered[lang]
@@ -151,6 +155,9 @@ export const runServer = () => {
         res.setHeader('Content-Type', 'text/xml; charset=utf-8');
         res.send(renderFeed(lang, posts));
     });
+
+    // Static files
+    app.use(express.static(getBuildDir()));
 
     app.listen(DEVSERVER_PORT);
     console.log(chalk.magentaBright(`Server running on port ${DEVSERVER_PORT}`));

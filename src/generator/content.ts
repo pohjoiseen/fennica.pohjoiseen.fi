@@ -211,7 +211,15 @@ const fixupImages = (html: string, basepath: string) => {
         } else {
             const caption = $el.attr('alt');
             const captionHtml = caption ? `<figcaption>${caption}</figcaption>` : '';
-            $el = $(el).wrap(`<figure><a href="${sources.srcOrig}"></a>${captionHtml}</figure>`);
+            $el.wrap(`<figure><a href="${sources.srcOrig}"></a>${captionHtml}</figure>`);
+            // unwrap resulting <figure> from <p> tag, if there is one.
+            // <figure> can't be contained in <p>, and $.html() would spit out
+            // <p></p><figure>...</figure><p></p> markup, which is harmless but incorrect and annoying
+            const $p = $el.parent().parent().parent();
+            if ($p[0].type === 'tag' && $p[0].tagName === 'p' && $p[0].children.length === 1) {
+                $($p[0].children[0]).insertAfter($p);
+                $p.remove();
+            }
         }
     });
     
@@ -248,6 +256,10 @@ const formatText = (text: string, lang: string, basepath: string, multiParagraph
     tp.disableRule('common/symbols/cf');
     if (lang !== 'ru') {
         tp.disableRule('common/punctuation/quote');
+    }
+    if (lang === 'fi') {
+        // for semicolons pretty much
+        tp.disableRule('common/space/afterPunctuation');
     }
     text = tp.execute(text);
     text = text.replace(/^<html><head><\/head><body>/, '').replace(/<\/body><\/html>\s*$/, '');

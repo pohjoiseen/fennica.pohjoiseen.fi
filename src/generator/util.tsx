@@ -107,16 +107,20 @@ export const renderFeed = (lang: string, posts: Post[]) => {
         // convert images and links to absolute ones
         const $ = cheerio.load(content, {decodeEntities: false});
         $('[src]').each((k, el) => {
-            const src = el.attribs.src;
-            if (src[0] === '/') {
-                $(el).attr('src', PUBLIC_BASE + src);
+            if (el.type === 'tag') {  // always true, just to make TS happy
+                const src = el.attribs.src;
+                if (src[0] === '/') {
+                    $(el).attr('src', PUBLIC_BASE + src);
+                }
+                $(el).removeAttr('srcset'); // for simplicity
             }
-            $(el).removeAttr('srcset'); // for simplicity
         });
         $('[href]').each((k, el) => {
-            const href = el.attribs.href;
-            if (href[0] === '/') {
-                $(el).attr('href', PUBLIC_BASE + href);
+            if (el.type === 'tag') {
+                const href = el.attribs.href;
+                if (href[0] === '/') {
+                    $(el).attr('href', PUBLIC_BASE + href);
+                }
             }
         });
         content = $.html().replace(/^<html><head><\/head><body>/, '').replace(/<\/body><\/html>/, '');
@@ -151,6 +155,10 @@ export const renderPage = (page: ReactElement) => {
     // Render hydratable SSR components
     const $ = cheerio.load(html, {decodeEntities: false});
     $('.__ssr').each((k, el) => {
+        if (el.type !== 'tag') {  // never true, just to make TS happy
+            return;
+        }
+        
         const type = el.attribs['data-component-type'], props = el.attribs['data-component-props'];
 
         const Component = COMPONENT_MAP[type];
