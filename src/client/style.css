@@ -830,8 +830,20 @@ h4 .time::before, h4 .place::before, h4 .prev::before, h4 .next::before {
   padding-top: 10px;
 }
 
-.post-heading-extra {
+.post-heading-coatsofarms {
   flex-grow: 1;
+  padding: 20px;
+}
+
+.post-heading-coatsofarms img {
+  border: none;
+  -webkit-filter: drop-shadow(0 0 5px black);
+  filter: drop-shadow(0 0 5px black);
+  margin-left: 10px;
+}
+
+.post-heading-coatsofarms img:first-child {
+  margin-left: 0;
 }
 
 .post-title {

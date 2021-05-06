@@ -7,7 +7,8 @@ import {Layout} from './Layout';
 import {formatPostDate, getLanguageVersionURLs, getPostLink} from '../generator/util';
 import _ from '../l10n';
 import {Content} from '../components/Content';
-import {PUBLIC_BASE} from '../const';
+import {PUBLIC_BASE, COATOFARMS_DEFAULT_SIZE} from '../const';
+import {normalizeCoatsOfArms} from './util';
 
 export interface PostPageProps {
     lang: string;
@@ -22,7 +23,8 @@ export const PostPage = (props: PostPageProps) => {
     const {lang, bundlePath, cssPath, post, prev, next} = props;
     const prevPath = prev ? getPostLink(prev.name, lang) : undefined;
     const nextPath = next ? getPostLink(next.name, lang) : undefined;
-
+    const coatsOfArms = normalizeCoatsOfArms(post.data.titleCoatOfArms);
+    
     return <Layout
         title={post.data.title}
         lang={lang}
@@ -41,7 +43,9 @@ export const PostPage = (props: PostPageProps) => {
             <article>
                 <div className={post.data.titleImage ? 'post-heading' : 'post-heading-no-pic'}
                      style={post.data.titleImage ? {backgroundImage: `url(${post.data.titleImage})`, backgroundPosition: `50% ${post.data.titleImageOffsetY !== undefined ? post.data.titleImageOffsetY : 50}%`} : {}}>
-                    {post.data.titleExtraHtml ? <div className="post-heading-extra" dangerouslySetInnerHTML={{__html: post.data.titleExtraHtml}} /> : null}
+                    {coatsOfArms.length > 0 && <div className="post-heading-coatsofarms">
+                        {coatsOfArms.map(coa => <img src={coa[0]} width={coa[1]} />)}
+                    </div>}
                     <div className="post-title">
                         <h1>{post.data.title}</h1>
                         {post.data.titleDate && <h4><span className="time"><time>{post.data.titleDate}</time></span></h4>}

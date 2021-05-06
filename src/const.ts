@@ -16,6 +16,7 @@ export const LANGUAGES = ['en', 'ru', 'fi'];  // 'fi' is not accessible for UI b
 
 export const IMAGE_SIZE = 677;
 export const THUMB_SIZE = 100;
+export const COATOFARMS_DEFAULT_SIZE = 150;
 
 export const ABOUT_ARTICLE = 'about-website';
 
