@@ -1,12 +1,5 @@
 /* Fennica styles -- based on Pohjoiseen.fi, originally from scratch, using only Eric Meyer's CSS reset */
 
-/* Finnish traffic signs font for logo.  Public domain (CC0), from https://github.com/thevangelist/tie */
-@font-face {
-  font-family: 'Tie-Regular';
-  src: url("./assets/Tie-Regular.woff");
-}
-
-
 /* http://meyerweb.com/eric/tools/css/reset/
    v2.0 | 20110126
    License: none (public domain)
@@ -163,6 +156,10 @@ blockquote ul {
   margin-left: 15px;
 }
 
+ul {
+  margin-left: 20px;
+}
+
 ul > li {
   list-style: circle;
 }
@@ -210,6 +207,10 @@ a:hover {
 
 .muted {
   color: #444;
+}
+
+header.big .muted {
+  color: #666;
 }
 
 /* Big Laptop */
@@ -278,7 +279,7 @@ main {
 }
 
 main::before {
-  /*background-image: url(./bg-map.jpg);*/
+  /*background-image: url(./bg-map.jpg);
   background-position: 0 0;
   background-repeat: repeat-y;
   opacity: 0.2;
@@ -288,7 +289,7 @@ main::before {
   right: 0;
   position: absolute;
   z-index: -1;
-  content: "";
+  content: "";*/
 }
 
 /* Header/footer */
@@ -301,25 +302,39 @@ header {
   margin: auto;
 }
 
+header.big {
+  height: 200px;
+  background: url(../../build/kainuu/suomussalmi/i/20200825-DSC_0160-Pano.2x.jpg) 50% 60% no-repeat;
+  background-size: cover;
+  flex-direction: column;
+}
+
 .title-link {
   text-decoration: none;
   position: relative;
 }
 
 .main-title {
-  display: flex;
-  width: fit-content;
-  flex-direction: row;
-  font-family: "Tie-Regular";
-  margin: 5px;
-  text-align: left;
-  font-size: 40px;
+  display: inline-block;
   border: 3px solid;
   background-color: #64382C;
   color: #fff;
   padding: 5px;
   border-radius: 7px;
-  line-height: 1;
+}
+
+.main-title img {
+  height: 40px;
+  vertical-align: middle;
+}
+
+.big .main-title {
+  margin: auto;
+  padding: 10px;
+}
+
+.big .main-title img {
+  height: 100px;
 }
 
 .title-link .note {
@@ -328,26 +343,9 @@ header {
   right: -8px;
   text-shadow: #000 0 0 3px, #000 0 0 3px, #000 0 0 3px;
   color: #fff;
-  font-family: Tie-Regular;
+  /*font-family: Tie-Regular;*/
   bottom: -1px;
   font-size: 16px;
-}
-
-.main-title img {
-  width: 33.5px;
-  height: 33.5px;
-  border: 5px solid white;
-  display: inline-block;
-  margin: 3px;
-}
-
-.main-title span {
-  display: inline-block;
-  line-height: 1.25;
-}
-
-.main-title span:last-child {
-  margin-left: 10px;
 }
 
 header nav {
@@ -355,6 +353,15 @@ header nav {
   margin-left: 15px;
   line-height: 1.4;
   color: #444;
+}
+
+header.big nav {
+  margin: 0;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  line-height: inherit;
+  font-size: 30px;
+  text-align: center;
 }
 
 header nav a {
@@ -404,6 +411,22 @@ footer p a {
   header nav {
     font-size: 16px;
   }
+  
+  header.big {  
+    height: 104px;
+  }
+  
+  .big .main-title {
+    padding: 5px;
+  }
+
+  .big .main-title img {
+    height: 48px;
+  }
+  
+  header.big nav {
+    font-size: 20px;
+  }  
 }
 
 /* Mobile */
@@ -413,19 +436,15 @@ footer p a {
   }
 
   .main-title {
-    font-size: 20px;
     border: 2.5px solid;
     padding: 2.5px;
     border-radius: 3.5px;
   }
 
   .main-title img {
-    width: 16px;
-    height: 16px;
-    border-width: 4px;
-    margin: 0 2px 0 0;
+    height: 20px;
   }
-
+    
   .title-link .note {
     font-size: 12px;
     right: -2px;
@@ -444,6 +463,22 @@ footer p a {
   header nav hr::before {
     content: " | ";
   }
+  
+  header.big {
+    height: 80px;
+  }
+
+  .big .main-title {
+    padding: 3px;
+  }
+  
+  .big .main-title img {
+    height: 30px;
+  }
+  
+  header.big nav {
+    font-size: 14px;
+  }  
 
   footer {
     min-height: 56px;
@@ -707,13 +742,17 @@ h1.poi-title {
 
 /* Article and blog stuff */
 
-.article-main, .post-main {
+.article-main, .post-main, .blog-main {
   padding: 0 10px;
   max-width: 860px;
   margin: auto;
 }
 
-.article-main h2, .post-main h2, .article-main h3, .post-main h3 {
+.blog-main {
+  max-width: 1280px;
+}
+
+.article-main h2, .post-main h2, .blog-main h2, .article-main h3, .post-main h3, .blog-main h3 {
   text-align: left;
   color: #fff;
   border-bottom: 1px solid #888;
@@ -792,6 +831,68 @@ h4 .time::before, h4 .place::before, h4 .prev::before, h4 .next::before {
   left: -20px;
 }
 
+.post-list-entry {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 10px 0;
+}
+
+.post-list-entry-titleimage {
+  width: 33%;
+  display: inline-block;
+}
+
+.post-list-entry-titleimage img {
+  border: 4px solid #222;
+  width: 100%;
+}
+
+.post-list-entry-notitleimage {
+  width: 33%;
+}
+
+.post-list-entry-body {
+  width: 67%;
+  padding-left: 20px;
+}
+
+.post-list-entry-top {
+  display: flex;
+  flex-direction: row;
+}
+
+.post-list-entry-title {
+  flex-grow: 1;
+}
+
+.post-list-entry-title h2 {
+  font-size: 40px;
+  line-height: 45px;
+  margin: 0 0 5px 0;
+  padding-bottom: 5px;
+}
+
+.post-list-entry-title h4 {
+  text-align: left;
+}
+
+.post-list-entry-coatsofarms {
+  flex-grow: 0;
+  white-space: nowrap;
+}
+
+.post-list-entry-coatsofarms img {
+  -webkit-filter: drop-shadow(0 0 5px black);
+  filter: drop-shadow(0 0 5px black);
+  margin-left: 10px;
+  width: calc(var(--width) / 2);
+}
+
+.post-list-entry-coatsofarms img:first-child {
+  margin-left: 0;
+}
+
 .post-heading {
   box-sizing: border-box;
   position: relative;
@@ -840,6 +941,7 @@ h4 .time::before, h4 .place::before, h4 .prev::before, h4 .next::before {
   -webkit-filter: drop-shadow(0 0 5px black);
   filter: drop-shadow(0 0 5px black);
   margin-left: 10px;
+  width: calc(var(--width));
 }
 
 .post-heading-coatsofarms img:first-child {
@@ -888,6 +990,22 @@ nav.navigation {
   content: "";
 }
 
+/* Mobile, Tablet */
+@media (max-width: 1023px) {
+  .post-list-entry-title h2 {
+    font-size: 30px;
+    line-height: 35px;
+  }
+  
+  .post-list-entry-coatsofarms img {
+    width: calc(var(--width) / 2.5);
+  }
+  
+  .post-heading-coatsofarms img {
+    width: calc(var(--width) / 1.5);
+  }
+}
+
 /* Mobile */
 @media (max-width: 767px) {
   .body-blog .post-heading {
@@ -896,5 +1014,48 @@ nav.navigation {
   
   nav.navigation {
     font-size: 24px;
+  }
+  
+  .blog-main {
+    padding: 0;
+  }
+  
+  .post-list-entry {
+    flex-direction: column;
+    padding-top: 0;
+  }
+  
+  .post-list-entry-titleimage {
+    width: 100%;
+  }
+  
+  .post-list-entry-titleimage img {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .post-list-entry-title h2 {
+    font-size: 25px;
+    line-height: 30px;
+    margin: 0 0 3px 0;
+    padding-bottom: 3px;
+  }
+  
+  .post-list-entry-coatsofarms img {
+    width: calc(var(--width) / 3);
+  }
+  
+  .post-list-entry-body {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 10px;
+  }
+  
+  .post-list-entry-description {
+    margin: 5px 0;
+  }
+  
+  .post-heading-coatsofarms img {
+    width: calc(var(--width) / 2);
   }
 }

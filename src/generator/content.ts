@@ -25,6 +25,7 @@ import {
 } from '../contentTypes';
 import {getBuildDir, getContentDir} from './paths';
 import {LANGUAGES} from '../const';
+import { stubTrue } from 'lodash';
 
 // Base name -> path map for all Markdown content
 interface ContentMap {
@@ -138,10 +139,17 @@ const fixupLinkPath = (html: string) => {
     const $ = cheerio.load(html, {decodeEntities: false});
 
     // quick and dirty check whether this is something we actually need to touch
-    const needToConvert = (str: string) => str.indexOf('://') === -1 && str.endsWith('.md');
+    const needToConvert = (str: string) => str.indexOf('://') === -1 && (str.endsWith('.md') || str.indexOf('.md#') !== -1);
 
     // how to actually convert
     const convert = (url: string) => {
+        const split = url.split('#');
+        let hash = '';
+        if (split.length > 1) {
+            url = split[0];
+            hash = split[1];
+        }
+        
         // ignore all relative part since our URLs are non-hierarchical
         url = url.replace(/^(.*\/)?([^\/]+)\.md/, '$2');
         // blog post
@@ -162,7 +170,7 @@ const fixupLinkPath = (html: string) => {
         if (!match || !mapping[match[3]]) {
             throw new Error(`Content file ${url} has unknown type or malformed filename`);
         }
-        return `/${match[2]}/${mapping[match[3]]}/${match[1]}/`;
+        return `/${match[2]}/${mapping[match[3]]}/${match[1]}/${hash ? '#' + hash : ''}`;
     }
 
     // href attributes
@@ -177,7 +185,12 @@ const fixupLinkPath = (html: string) => {
 }
 
 export const getImageSources = (src: string, basepath: string) => {
-    let srcOrig = path.resolve(basepath, src);
+    let srcOrig
+    if (src[0] === '/') {
+        srcOrig = getContentDir() + src
+    } else {
+        srcOrig = path.resolve(basepath, src);
+    }
     if (!fs.existsSync(srcOrig)) {
         throw new Error(`Could not resolve image ${src}, not found file ${srcOrig}`);
     }
@@ -434,7 +447,12 @@ const preloadArticles = (lang: string) => {
  */
 const formatPost = (post: Post, lang: string) => {
     const basepath = path.dirname(contentMap[lang].posts[post.name]);
+    if (post.data.titleImage && post.data.titleImageInText) {
+        post.content = `![${post.data.titleImageCaption ? post.data.titleImageCaption : ''}](${post.data.titleImage})\n\n${post.content}`
+    }
     post.content = formatText(post.content, lang, basepath, true);
+    post.data.description = post.data.description ? formatText(post.data.description, lang, basepath) : undefined;
+    post.data.titleImageCaption = post.data.titleImageCaption ? formatText(post.data.titleImageCaption, lang, basepath) : undefined;
 }
 
 /**

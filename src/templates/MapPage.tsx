@@ -24,7 +24,6 @@ export const MapPage = (props: MapProps) => {
         cssPath={cssPath}
         languageVersions={getLanguageVersionURLs(map.name, 'maps')}
         bodyClass="body-map"
-        activeHeaderLink="maps"
         noFooter
     >
         {ssrComponent('mapView', {lang, data: map.data, content: map.content, geoJSONs: map.geoJSONs})}

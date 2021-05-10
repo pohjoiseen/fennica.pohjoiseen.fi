@@ -28,7 +28,6 @@ export const PlacePage = (props: PlacePageProps) => {
         cssPath={cssPath}
         languageVersions={getLanguageVersionURLs(poi.name, 'pois')}
         bodyClass="body-poi"
-        activeHeaderLink="pois"
     >
         <main>
             <div className="poi-logo">

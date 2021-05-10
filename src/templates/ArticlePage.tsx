@@ -7,7 +7,6 @@ import {Layout} from './Layout';
 import {getLanguageVersionURLs} from '../generator/util';
 import _ from '../l10n';
 import {Content} from '../components/Content';
-import {ABOUT_ARTICLE} from '../const';
 
 export interface ArticlePageProps {
     lang: string;
@@ -22,7 +21,10 @@ export const ArticlePage = (props: ArticlePageProps) => {
     const {lang, bundlePath, cssPath, article, prev, next} = props;
     const prevPath = prev ? (prev.name === 'index' ? `/${lang}/article/` : `/${lang}/article/${prev.name}`) : undefined;
     const nextPath = next ? (next.name === 'index' ? `/${lang}/article/` : `/${lang}/article/${next.name}`) : undefined;
-
+    let bigHeaderPage = undefined
+    if (article.name === 'about' || article.name === 'contents') {
+        bigHeaderPage = article.name
+    }
     return <Layout
         title={article.data.title}
         lang={lang}
@@ -30,11 +32,11 @@ export const ArticlePage = (props: ArticlePageProps) => {
         cssPath={cssPath}
         languageVersions={getLanguageVersionURLs(article.name, 'articles')}
         bodyClass="body-article"
-        activeHeaderLink={article.name == ABOUT_ARTICLE ? 'about' : 'articles'}
         prevPath={prevPath}
         prevTitle={prev ? prev.data.title : undefined}
         nextPath={nextPath}
         nextTitle={next ? next.data.title : undefined}
+        bigHeaderPage={bigHeaderPage}
     >
         <main>
             <h1 className="article-title">{article.data.title}</h1>

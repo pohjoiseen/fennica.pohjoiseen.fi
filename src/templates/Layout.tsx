@@ -27,14 +27,14 @@ export interface LayoutProps {
     noindex?: boolean;
     rssLink?: string;
     bodyClass: string;
-    activeHeaderLink: 'maps' | 'pois' | 'posts' | 'articles' | 'about';
     noFooter?: boolean;
+    bigHeaderPage?: string;
     children: ReactNode;
 }
 
 export const Layout = (props: LayoutProps) => {
     const {title, description, published, isOpenGraphArticle, titleImage, lang, bundlePath, cssPath, languageVersions,
-        parentPath, prevPath, nextPath, prevTitle, nextTitle, noindex, rssLink, bodyClass, activeHeaderLink, noFooter, children} = props;
+        parentPath, prevPath, nextPath, prevTitle, nextTitle, noindex, rssLink, bodyClass, noFooter, bigHeaderPage, children} = props;
 
     return <html lang={lang} prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#">
     <head>
@@ -94,30 +94,28 @@ export const Layout = (props: LayoutProps) => {
     </head>
 
     <body className={bodyClass}>
-    <header role="banner">
-        <a className="title-link" href="/">
-            <h1 className="main-title"><img alt="logo" src="/static/sight-icon.png" /><span>Encyclopaedia</span> <span>Fennica</span></h1>
-            <div className="note">Beta</div>
+    <header role="banner" className={bigHeaderPage ? 'big' : ''}>
+        <a className="title-link main-title" href="/">
+            <img alt="Encyclopaedia Fennica" src="/static/logo.svg" />
         </a>
-       {/* <nav> 
-            <a href={`/${lang}/map/`} className={activeHeaderLink === 'maps' || activeHeaderLink === 'pois' ? 'active' : ''}>{_('Map', lang)}</a> */}
-            {/* &nbsp;|&nbsp;
-            <a href={`/${lang}/place/`} className={activeHeaderLink === 'pois' ? 'active' : ''}>{_('Places', lang)}</a> */}
-        {/*    <hr /> */}
-            {/* <a href={`/${lang}/article/`} className={activeHeaderLink === 'articles' ? 'active' : ''}>{_('Articles', lang)}</a> 
-            &nbsp;|&nbsp; */}
-        {/* <a href={`/${lang}/`} className={activeHeaderLink === 'posts' ? 'active' : ''}>{_('Blog', lang)}</a> */}
-            {/* &nbsp;|&nbsp;
-            <a href={`/${lang}/article/${ABOUT_ARTICLE}/`} className={activeHeaderLink === 'about' ? 'active' : ''}>{_('About', lang)}</a> */}
-        {/* </nav> */}
         <nav>
-            {languageVersions['en']
-                ? <a href={languageVersions['en']} className={lang === 'en' ? 'active' : ''}>ENG</a>
-                : <span className="muted">ENG</span>}
-            <hr />
-            {languageVersions['ru']
-                ? <a href={languageVersions['ru']} className={lang === 'ru' ? 'active' : ''}>RUS</a>
-                : <span className="muted">RUS</span>}
+            {bigHeaderPage ? <>
+                {lang === 'ru' && <><a href={`/${lang}/`} className={bigHeaderPage === 'blog' ? 'active' : ''}>{_('Blog', lang)}</a> | <a
+                   href={`/${lang}/article/contents/`} className={bigHeaderPage === 'contents' ? 'active' : ''}>{_('Contents', lang)}</a> | <a
+                   href={`/${lang}/article/about/`} className={bigHeaderPage === 'about' ? 'active' : ''}>{_('About Website', lang)}</a> |</>} {languageVersions['en']
+                    ? <a href={languageVersions['en']} className={lang === 'en' ? 'active' : ''}>English</a>
+                    : <span className="muted">English</span>}/{languageVersions['ru']
+                    ? <a href={languageVersions['ru']} className={lang === 'ru' ? 'active' : ''}>Русский</a>
+                    : <span className="muted">Русский</span>}
+            </> : <>
+                {languageVersions['en']
+                    ? <a href={languageVersions['en']} className={lang === 'en' ? 'active' : ''}>ENG</a>
+                    : <span className="muted">ENG</span>}
+                <hr />
+                {languageVersions['ru']
+                    ? <a href={languageVersions['ru']} className={lang === 'ru' ? 'active' : ''}>RUS</a>
+                    : <span className="muted">RUS</span>}
+            </>}
         </nav>
     </header>
 

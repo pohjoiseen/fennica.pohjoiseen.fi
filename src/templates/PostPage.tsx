@@ -23,7 +23,8 @@ export const PostPage = (props: PostPageProps) => {
     const {lang, bundlePath, cssPath, post, prev, next} = props;
     const prevPath = prev ? getPostLink(prev.name, lang) : undefined;
     const nextPath = next ? getPostLink(next.name, lang) : undefined;
-    const coatsOfArms = normalizeCoatsOfArms(post.data.titleCoatOfArms);
+    const coatsOfArms = normalizeCoatsOfArms(post.data.coatOfArms);
+    const useTitleImage = post.data.titleImage && !post.data.titleImageInText;
     
     return <Layout
         title={post.data.title}
@@ -33,7 +34,6 @@ export const PostPage = (props: PostPageProps) => {
         titleImage={PUBLIC_BASE + post.data.titleImage}
         languageVersions={getLanguageVersionURLs(post.name, 'posts')}
         bodyClass="body-post"
-        activeHeaderLink="posts"
         prevPath={prevPath}
         prevTitle={prev ? prev.data.title : undefined}
         nextPath={nextPath}
@@ -41,14 +41,14 @@ export const PostPage = (props: PostPageProps) => {
     >
         <main className="post-main">
             <article>
-                <div className={post.data.titleImage ? 'post-heading' : 'post-heading-no-pic'}
-                     style={post.data.titleImage ? {backgroundImage: `url(${post.data.titleImage})`, backgroundPosition: `50% ${post.data.titleImageOffsetY !== undefined ? post.data.titleImageOffsetY : 50}%`} : {}}>
+                <div className={useTitleImage ? 'post-heading' : 'post-heading-no-pic'}
+                     style={useTitleImage ? {backgroundImage: `url(${post.data.titleImage})`, backgroundPosition: `50% ${post.data.titleImageOffsetY !== undefined ? post.data.titleImageOffsetY : 50}%`} : {}}>
                     {coatsOfArms.length > 0 && <div className="post-heading-coatsofarms">
-                        {coatsOfArms.map(coa => <img src={coa[0]} width={coa[1]} />)}
+                        {coatsOfArms.map(coa => <img src={coa[0]} style={{'--width': Math.floor(coa[1]) + 'px'} as any} />)}
                     </div>}
                     <div className="post-title">
                         <h1>{post.data.title}</h1>
-                        {post.data.titleDate && <h4><span className="time"><time>{post.data.titleDate}</time></span></h4>}
+                        {post.data.date && <h4><span className="time"><time>{post.data.date}</time></span></h4>}
                         {prev && <h4><span className="prev">{_('Previous', lang)}: <a href={prevPath}>{prev.data.title}</a></span></h4>}
                         {next && <h4><span className="next">{_('Next', lang)}: <a href={nextPath}>{next.data.title}</a></span></h4>}
                     </div>

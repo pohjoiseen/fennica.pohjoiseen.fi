@@ -85,10 +85,13 @@ export interface Article {
  */
 export interface PostDefinition {
     title: string;
-    titleImageOffsetY?: number;
     titleImage?: string;
-    titleDate?: string;
-    titleCoatOfArms?: string | [string, number] | ((string | [string, number])[]);
+    titleImageOffsetY?: number;
+    titleImageInText?: boolean;
+    titleImageCaption?: string;
+    date?: string;
+    coatOfArms?: string | [string, number] | ((string | [string, number])[]);
+    description?: string;
     draft?: boolean;
 }
 

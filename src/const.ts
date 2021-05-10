@@ -20,7 +20,7 @@ export const COATOFARMS_DEFAULT_SIZE = 150;
 
 export const ABOUT_ARTICLE = 'about-website';
 
-export const POSTS_PER_PAGE = 10;
+export const POSTS_PER_PAGE = 25;
 
 export const GOOGLE_ANALYTICS_ID = 'UA-72859112-1';
 
