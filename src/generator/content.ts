@@ -25,7 +25,6 @@ import {
 } from '../contentTypes';
 import {getBuildDir, getContentDir} from './paths';
 import {LANGUAGES} from '../const';
-import { stubTrue } from 'lodash';
 
 // Base name -> path map for all Markdown content
 interface ContentMap {
@@ -247,7 +246,7 @@ const fixupImages = (html: string, basepath: string) => {
  * @param {string} basepath
  * @param {boolean} multiParagraph
  */
-const formatText = (text: string, lang: string, basepath: string, multiParagraph?: boolean): string => {
+export const formatText = (text: string, lang: string, basepath: string, multiParagraph?: boolean): string => {
     if (!text) return '';
 
     // Process Markdown.  The result will always be at least wrapped into a paragraph, delete wrapping <p>...</p>

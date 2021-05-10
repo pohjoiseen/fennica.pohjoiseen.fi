@@ -7,6 +7,8 @@
  *   files wherever necessary.
  * - if cut props is set, and there is a <!--more--> construction in the body, then everything after it is not
  *   displayed, and a link is displayed instead of it.
+ *   NOTE: <!--more--> feature is not used anymore as of May 2021 (in favor of explicit post description fields),
+ *   code for it here kept so far.
  */
 import * as React from 'react';
 import cheerio from 'cheerio';

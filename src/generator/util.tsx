@@ -6,7 +6,7 @@ import {renderToStaticMarkup, renderToString} from 'react-dom/server';
 import cheerio from 'cheerio';
 import {Feed} from 'feed';
 import {AUTHOR, COPYRIGHT, FAVICON, LANGUAGES, MAIN_TITLE, PUBLIC_BASE, RSS_DESCRIPTION} from '../const';
-import {contentMap} from './content';
+import {contentMap, formatText} from './content';
 import {COMPONENT_MAP} from '../components/components';
 import {Post} from '../contentTypes';
 import _ from '../l10n';
@@ -97,15 +97,16 @@ export const renderFeed = (lang: string, posts: Post[]) => {
         const match = post.name.match(/^([0-9]{4}-[0-9]{2}-[0-9]{2})-/);
         const date = new Date(match![1]);
 
-        let content = post.content;
-        // if there is a cut mark, cut off there
-        const cutIndex = content.indexOf('<!--more-->');
-        if (cutIndex !== -1) {
-            content = content.substr(0, cutIndex);
+        let description = `<p>${post.data.description}</p>`;
+        // add title image in the body (always for feed, regardless of titleImageInText)
+        if (post.data.titleImage) {
+            const titleImageMarkdown = `![${post.data.titleImageCaption ? post.data.titleImageCaption : ''}](${post.data.titleImage})`;
+            const titleImageHtml = formatText(titleImageMarkdown, lang, path.dirname(contentMap[lang].posts[post.name])).replace('figure>', 'p>');  // for simplicity no <figure>
+            description = titleImageHtml + description;
         }
 
         // convert images and links to absolute ones
-        const $ = cheerio.load(content, {decodeEntities: false});
+        const $ = cheerio.load(description, {decodeEntities: false});
         $('[src]').each((k, el) => {
             if (el.type === 'tag') {  // always true, just to make TS happy
                 const src = el.attribs.src;
@@ -123,16 +124,13 @@ export const renderFeed = (lang: string, posts: Post[]) => {
                 }
             }
         });
-        content = $.html().replace(/^<html><head><\/head><body>/, '').replace(/<\/body><\/html>/, '');
-        if (cutIndex !== -1) {
-            content += `<p><a href="${url}">${_('Continue reading', lang)}</a></p>`;
-        }
+        description = $.html().replace(/^<html><head><\/head><body>/, '').replace(/<\/body><\/html>/, '');
         
         feed.addItem({
             title: post.data.title,
             id: url,
             link: url,
-            content,
+            description,
             date,
             image: post.data.titleImage ? PUBLIC_BASE + post.data.titleImage : undefined,
         });
