@@ -6,7 +6,7 @@ import {Fragment} from 'react';
 import {range} from 'lodash';
 import {Post} from '../contentTypes';
 import {Layout} from './Layout';
-import {formatPostDate, getBlogLink, getPostLink} from '../generator/util';
+import {formatPostDate, getBlogLink, getImageLink, getPostLink} from '../generator/util';
 import _ from '../l10n';
 import {Content} from '../components/Content';
 import {LANGUAGES} from '../const';
@@ -93,7 +93,7 @@ export const BlogPage = (props: BlogPageProps) => {
                 const coatsOfArms = normalizeCoatsOfArms(post.data.coatOfArms);
                 return <article key={post.name} className="post-list-entry">
                     {post.data.titleImage
-                        ? <a className="post-list-entry-titleimage" href={getPostLink(post.name, lang)}><img src={post.data.titleImage.replace(/\.([^.]+)$/, '.1x.$1')} /></a>
+                        ? <a className="post-list-entry-titleimage" href={getPostLink(post.name, lang)}><img src={getImageLink(post.data.titleImage, '1x')} /></a>
                         : <div className="post-list-entry-notitleimage" />}
                     <div className="post-list-entry-body">                        
                         <div className="post-list-entry-top">

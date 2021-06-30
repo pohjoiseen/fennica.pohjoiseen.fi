@@ -5,7 +5,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as fsExtra from 'fs-extra';
 import chalk from 'chalk';
-import {getBuildDir, getContentDir} from './paths';
+import {getBuildDir, getContentDir, pathResolve} from './paths';
 import {STATIC_DIR} from '../const';
 
 export const initStaticDir = () => {
@@ -17,7 +17,7 @@ export const initStaticDir = () => {
 
 export const handleModifyStaticDir = (file: string) => {
     const staticDir = getContentDir() + '/' + STATIC_DIR + '/';
-    file = path.resolve(getContentDir(), file);
+    file = pathResolve(getContentDir(), file);
     if (!file.startsWith(staticDir)) {
         return false;
     }
@@ -30,7 +30,7 @@ export const handleModifyStaticDir = (file: string) => {
 
 export const handleRemoveStaticDir = (file: string) => {
     const staticDir = getContentDir() + '/' + STATIC_DIR + '/';
-    file = path.resolve(getContentDir(), file);
+    file = pathResolve(getContentDir(), file);
     if (!file.startsWith(staticDir)) {
         return false;
     }

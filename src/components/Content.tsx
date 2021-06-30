@@ -49,7 +49,7 @@ export const Content = ({content, lang, cut}: ContentProps) => {
             // original file
             $('img').each((k, el) => {
                 if (el.type === 'tag') {  // always true, make TS happy
-                    items.push({url: '.' + el.attribs.src.replace(/.1x.([^.]+)$/, '.$1'), title: el.attribs.alt});
+                    items.push({url: '.' + el.attribs.src.replace(/.[12]x.([^.]+)$/, '.$1'), title: el.attribs.alt});
                 }
             });
             result.push(ssrComponent('reactImageGallery', {

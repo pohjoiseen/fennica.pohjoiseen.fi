@@ -10,7 +10,7 @@ import {contentMap, formatText} from './content';
 import {COMPONENT_MAP} from '../components/components';
 import {Post} from '../contentTypes';
 import _ from '../l10n';
-import { getBuildDir } from './paths';
+import { getBuildDir, pathResolve } from './paths';
 
 /**
  * Finds all language versioins of a content item.
@@ -54,6 +54,21 @@ export const getBlogLink = (page: number, lang: string) => {
         return `/${lang}/`;
     }
     return `/${lang}/${page}/`;
+}
+
+export const getImageLink = (path: string, size: string) => {
+    const sizes = ['t', '1x', '2x'];
+    let k = sizes.indexOf(size);
+    if (k === -1) {
+        throw new Error(`Invalid size ${size}`);
+    }
+    for (; k < sizes.length; k++) {
+        const result = path.replace(/\.([^.]+)$/, `.${sizes[k]}.$1`);
+        if (fs.existsSync(getBuildDir() + result)) {
+            return result;
+        }
+    }
+    return path;
 }
 
 /**
@@ -187,7 +202,7 @@ export const outputPage = (page: ReactElement, webPath: string) => {
     const html = renderPage(page);
     const fullPath = getBuildDir() + webPath;
     fs.mkdirSync(fullPath, {recursive: true});
-    fs.writeFileSync(path.resolve(fullPath, 'index.html'), html, {encoding: 'utf8'});
+    fs.writeFileSync(pathResolve(fullPath, 'index.html'), html, {encoding: 'utf8'});
 }
 
 /**
@@ -201,5 +216,5 @@ export const outputFeed = (lang: string, posts: Post[], webPath: string) => {
     const feed = renderFeed(lang, posts);
     const fullPath = getBuildDir() + webPath;
     fs.mkdirSync(fullPath, {recursive: true});
-    fs.writeFileSync(path.resolve(fullPath, 'rss.xml'), feed, {encoding: 'utf8'});
+    fs.writeFileSync(pathResolve(fullPath, 'rss.xml'), feed, {encoding: 'utf8'});
 }

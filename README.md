@@ -21,8 +21,7 @@ completely statically.  The generator processes following files:
 * **Static files** are simply copied from content `static` dir to build `static` dir.  They aren't used much
   (for client-side JS and CSS we use webpack), just for favicon and such
 * **Images** are any .jpg, .jpeg, .png files outside `static` dir.  They are copied into build dir, preserving
-  directory structure, and `1x`, `2x` and `thumb` versions are generated for each (the original image is just
-  symlinked if it's not large enough to downsize into a particular size)
+  directory structure, and `1x`, `2x` and `thumb` versions are generated for each (if the image is big enough)
 * **Content files** are Markdown files with front matter.  They can be arranged in the content dir in whatever
   directory structure is convenient; that structure is discarded, and all content files of a given type live in one
   namespace and must have unique names.  They must have names of the form `name.lang.type.md`, where `lang` is 

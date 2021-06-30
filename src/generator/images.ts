@@ -7,12 +7,12 @@ import fg from 'fast-glob';
 import chalk from 'chalk';
 import sharp from 'sharp';
 import {imageSize} from 'image-size';
-import {getBuildDir, getContentDir} from './paths';
+import {getBuildDir, getContentDir, pathResolve} from './paths';
 import {IMAGE_SIZE, STATIC_DIR, THUMB_SIZE} from '../const';
 
 /**
  * Process single image: copy from content to output dir, generate different sizes and thumbnails.
- * If the image is too small for a certain size, it is just symlinked.  Directory structure is kept.
+ * If the image is too small for a certain size, that size is not generated.  Directory structure is kept.
  *
  * @param imagePath
  * @param force  Normally existing files are not re-generated, this forces regeneration anyway.
@@ -24,7 +24,7 @@ const handleImage = async (imagePath: string, force?: boolean) => {
     const out1x = outPath.replace(/\.(png|jpeg|jpg)$/, '.1x.$1');
     const out2x = outPath.replace(/\.(png|jpeg|jpg)$/, '.2x.$1');
     const outThumb = outPath.replace(/\.(png|jpeg|jpg)$/, '.t.$1');
-    if (!force && fs.existsSync(outPath) && fs.existsSync(out1x) && fs.existsSync(out2x) && fs.existsSync(outThumb)) {
+    if (!force && fs.existsSync(outPath)) {
         return false;
     }
     fs.mkdirSync(path.dirname(outPath), {recursive: true});
@@ -87,8 +87,6 @@ const handleImage = async (imagePath: string, force?: boolean) => {
             await sharp(imagePath)
                 .resize(w1x, h1x)
                 .toFile(out1x);
-        } else {
-            fs.symlinkSync(path.basename(outPath), out1x);
         }
     }
 
@@ -98,8 +96,6 @@ const handleImage = async (imagePath: string, force?: boolean) => {
             await sharp(imagePath)
                 .resize(w2x, h2x)
                 .toFile(out2x);
-        } else {
-            fs.symlinkSync(path.basename(outPath), out2x);
         }
     }
 
@@ -110,8 +106,6 @@ const handleImage = async (imagePath: string, force?: boolean) => {
             await sharp(imagePath)
                 .resize(wThumb, hThumb)
                 .toFile(outThumb);
-        } else {
-            fs.symlinkSync(path.basename(outPath), outThumb);
         }
     }
     return true;
@@ -156,7 +150,7 @@ export const handleModifyImage = async (file: string, isAdd: boolean) => {
             'If its dimensions are changed, old content pages might still include it with old dimensions.  Consider full regeneration (devserver restart)'));
     }
 
-    file = path.resolve(getContentDir(), file);
+    file = pathResolve(getContentDir(), file);
     console.log(`Image ${chalk.blueBright('change')}: ${chalk.greenBright(file)} - copying/generating in different sizes`);
     await handleImage(file, true);
     return true;
@@ -177,7 +171,7 @@ export const handleRemoveImage = (file: string) => {
         'If it was used in any content, it is broken now but not detected yet.  Consider full regeneration (devserver restart)'));
     console.log(`Image ${chalk.blueBright('remove')}: ${chalk.greenBright(file)} - not removing`);
 
-    // file = path.resolve(getContentDir(), file);
+    // file = pathResolve(getContentDir(), file);
     // const targetFile = file.replace(getContentDir(), getBuildDir());
     // const target1x = targetFile.replace(/\.(png|jpeg|jpg)$/, '.1x.$1');
     // const target2x = targetFile.replace(/\.(png|jpeg|jpg)$/, '.2x.$1');

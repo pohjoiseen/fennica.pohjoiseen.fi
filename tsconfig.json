@@ -12,7 +12,6 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "module": "CommonJS",
-    "preserveSymlinks": true,
     "sourceMap": true
   },
   "include": [

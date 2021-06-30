@@ -23,8 +23,9 @@ import {
     Post,
     PostDefinition
 } from '../contentTypes';
-import {getBuildDir, getContentDir} from './paths';
+import {getBuildDir, getContentDir, pathResolve} from './paths';
 import {LANGUAGES} from '../const';
+import { getImageLink } from './util';
 
 // Base name -> path map for all Markdown content
 interface ContentMap {
@@ -58,7 +59,6 @@ const scanContent = () => {
     const counts = {maps: 0, pois: 0, articles: 0, posts: 0};
     const mdFiles = fg.sync('**/*.md', {absolute: true, cwd: root});
     for (let mdPath of mdFiles) {
-        const mdFilename = path.basename(mdPath);
         const match = mdPath.match(/^(.+)\.([^.]+)\.([^.]+)\.md$/);
         if (!match) {
             throw new Error(`Content file ${mdPath} filename could not be parsed (missing language and/or type?`);
@@ -157,7 +157,7 @@ const fixupLinkPath = (html: string) => {
             if (!contentMap[matchPost[5]].posts[`${matchPost[1]}-${matchPost[2]}-${matchPost[3]}-${matchPost[4]}`]) {
                 throw new Error(`Broken link to post ${url}`);
             }
-            return `/${matchPost[5]}/${matchPost[1]}/${matchPost[2]}/${matchPost[3]}/${matchPost[4]}/`;
+            return `/${matchPost[5]}/${matchPost[1]}/${matchPost[2]}/${matchPost[3]}/${matchPost[4]}/${hash ? '#' + hash : ''}`;
         }
         // other types
         const mapping: {[urlPart: string]: string} = {
@@ -188,18 +188,16 @@ export const getImageSources = (src: string, basepath: string) => {
     if (src[0] === '/') {
         srcOrig = getContentDir() + src
     } else {
-        srcOrig = path.resolve(basepath, src);
+        srcOrig = pathResolve(basepath, src);
     }
     if (!fs.existsSync(srcOrig)) {
         throw new Error(`Could not resolve image ${src}, not found file ${srcOrig}`);
     }
-    srcOrig = srcOrig.replace(getContentDir(), getBuildDir());
-    let src1x = srcOrig.replace(/(\.[^.]+)$/, '.1x$1');
-    const size1x = imageSize(src1x);
-    srcOrig = srcOrig.replace(getBuildDir(), '');
-    src1x = src1x.replace(getBuildDir(), '');
-    const src2x = srcOrig.replace(/(\.[^.]+)$/, '.2x$1');
-    const srcThumb = srcOrig.replace(/(\.[^.]+)$/, '.t$1');
+    srcOrig = srcOrig.replace(getContentDir(), '');
+    const src1x = getImageLink(srcOrig, '1x');
+    const src2x = getImageLink(srcOrig, '2x');
+    const srcThumb = getImageLink(srcOrig, 't');
+    const size1x = imageSize(getBuildDir() + src1x);
     return {srcOrig, src1x, src2x, srcThumb, width1x: size1x.width, height1x: size1x.height};
 }
 
@@ -724,7 +722,7 @@ export const handleModifyContent = (file: string) => {
         return false;
     }
 
-    file = path.resolve(getContentDir(), file);
+    file = pathResolve(getContentDir(), file);
     const match = file.match(/^(.*)\.([^.]+)\.([^.]+)\.md$/);
     if (!match) {
         return false;
@@ -831,7 +829,7 @@ export const handleRemoveContent = (file: string) => {
         return false;
     }
 
-    file = path.resolve(getContentDir(), file);
+    file = pathResolve(getContentDir(), file);
     const match = file.match(/^(.*)\.([^.]+)\.([^.]+)\.md$/);
     if (!match) {
         return false;
