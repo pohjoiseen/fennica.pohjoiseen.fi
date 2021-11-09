@@ -128,7 +128,7 @@ export const Layout = (props: LayoutProps) => {
                 &nbsp;
                 <a href={prevPath} className="text">{prevTitle}</a>
             </>}
-            {prevPath && nextPath && '&nbsp;| '}
+            {prevPath && nextPath && '\u00A0| '}
             {nextPath && <>
                 <a href={nextPath} className="text">{nextTitle}</a>
                 &nbsp;

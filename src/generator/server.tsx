@@ -77,7 +77,12 @@ export const runServer = () => {
     });
 
     // POI pages
-    app.get('/:lang/place/:name/', (req, res) => {
+    app.get('/:lang/place/:name/', (req, res, next) => {
+        if (req.params.name.indexOf('.json') === req.params.name.length - 5) {
+            next();
+            return;
+        }
+
         if (poiContent[req.params.lang] && poiContent[req.params.lang][req.params.name]) {
             const poi = poiContent[req.params.lang][req.params.name];
 

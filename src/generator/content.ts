@@ -734,7 +734,7 @@ export const handleModifyContent = (file: string) => {
             console.log(`Map ${chalk.blueBright('change')}: ${chalk.greenBright(file)} - reloading`);
             try {
                 contentMap[lang].maps[name] = file;
-                preloadMap(name, file)
+                preloadMap(name, lang);
                 generateGeoJSONForMap(name, file);
             } catch (e) {
                 console.log(chalk.yellowBright('Failed to reload, error was:'))

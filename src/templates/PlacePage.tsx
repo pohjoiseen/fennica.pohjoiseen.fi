@@ -35,9 +35,9 @@ export const PlacePage = (props: PlacePageProps) => {
             </div>
             <h1 className="poi-title">{poi.data.title}</h1>
             <p className="poi-subtitle">
-                {parent && <><a href={`/${lang}/place/${parent.name}/`}>&#8592; {parent.data.title}</a> &bullet; </>}
+                {parent && <><a href={`/${lang}/place/${parent.name}/`}>&#8592; {parent.data.title}</a> • </>}
                 {poi.data.subtitle
-                    ? `${_(`type-${poi.data.type}`, lang)} &bullet; ${poi.data.subtitle}`
+                    ? `${_(`type-${poi.data.type}`, lang)} • ${poi.data.subtitle}`
                     : _(`type-${poi.data.type}`, lang)}
             </p>
             <hr />
