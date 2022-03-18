@@ -7,7 +7,7 @@ export const STATIC_DIR = 'static';
 
 export const MAIN_TITLE = 'Encyclopaedia Fennica';
 export const AUTHOR = 'Alexander Ulyanov';
-export const COPYRIGHT = '© 2015-2021';
+export const COPYRIGHT = '© 2015-2022';
 export const FAVICON = '/static/favicon.png';
 export const PUBLIC_BASE = 'https://fennica.pohjoiseen.fi';
 export const FOOTER_HREF = 'https://www.pohjoiseen.fi/';

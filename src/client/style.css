@@ -880,6 +880,8 @@ h4 .time::before, h4 .place::before, h4 .prev::before, h4 .next::before {
 .post-list-entry-coatsofarms {
   flex-grow: 0;
   white-space: nowrap;
+  display: flex;
+  align-items: flex-start;
 }
 
 .post-list-entry-coatsofarms img {
@@ -934,6 +936,8 @@ h4 .time::before, h4 .place::before, h4 .prev::before, h4 .next::before {
 .post-heading-coatsofarms {
   flex-grow: 1;
   padding: 20px;
+  display: flex;
+  align-items: start;
 }
 
 .post-heading-coatsofarms img {
