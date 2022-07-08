@@ -7,7 +7,7 @@ const config: webpack.Configuration = {
 
     watch: true,
 
-    entry: path.resolve(__dirname, './main.tsx'),
+    entry: path.resolve(__dirname, './main.ts'),
 
     output: {
         path: path.resolve(__dirname, '../../build/static'),

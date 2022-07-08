@@ -58,16 +58,12 @@ table {
 
 body {
   min-width: 320px;
-  font-family: "PT Sans", "Helvetica Neue", Arial, sans-serif;
-  font-size: 16px;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 14px;
   line-height: 1.6;
-  background: #333;
-  color: #ccc;
+  background: #fbfbfb;
+  color: #333;
   overflow-x: hidden;
-}
-
-header, footer {
-  background: #222;
 }
 
 h1 {
@@ -75,14 +71,22 @@ h1 {
   margin-top: 30px;
   margin-bottom: 15px;
   font-size: 72px;
-  color: #fff;
+  color: #000;
   line-height: 1.3;
   font-weight: normal;
 }
 
 h1 a, h1 a:hover {
-  color: #fff;
+  color: #000;
   text-decoration: none;
+}
+
+h2 a {
+  text-decoration: none;
+}
+
+h2 a:hover {
+  text-decoration: underline;
 }
 
 h2 {
@@ -130,7 +134,7 @@ sub {
 hr {
   width: 300px;
   margin: 8px auto;
-  border: 1px solid #888;
+  border: 1px solid #444;
 }
 
 p, ul, blockquote, .block, table {
@@ -141,7 +145,7 @@ p, ul, blockquote, .block, table {
 }
 
 th, td {
-  border: 1px solid #888;
+  border: 1px solid #ccc;
   padding: 3px;
   text-align: center;
 }
@@ -150,7 +154,7 @@ blockquote {
   font-size: larger;
   max-width: 820px;
   padding: 5px 10px;
-  border-left: 4px dotted #888;
+  border-left: 4px dotted #ccc;
 }
 
 blockquote ul {
@@ -174,8 +178,11 @@ figure {
   width: 80vw;
 }
 
+p + figure {
+  margin-top: 40px;
+}
+
 figure img, #primary img {
-  border: 4px solid #222;
   max-width: 100%;
   height: auto;
   box-sizing: border-box;
@@ -195,19 +202,19 @@ i, em {
 
 b, strong {
   font-weight: bold;
-  color: #fff;
+  color: #000;
 }
 
 a {
-  color: #fff;
+  color: #000;
 }
 
 a:hover {
-  color: #bbb;
+  color: #66c;
 }
 
 .muted {
-  color: #444;
+  color: #ccc;
 }
 
 header.big .muted {
@@ -220,6 +227,16 @@ header.big .muted {
 
 /* Small laptop */
 @media (max-width: 1399px) {
+}
+
+/* Just small enough to not break out images */
+@media (max-width: 1280px) {
+  figure {
+    left: auto;
+    width: auto;
+    margin-left: -20px;
+    margin-right: -20px;
+  }
 }
 
 /* Mobile, Tablet */
@@ -262,6 +279,12 @@ header.big .muted {
   figure {
     left: calc(-50vw + 50%);
     width: 100vw;
+    margin-left: 0;
+    margin-right: 0;
+  }
+  
+  hr {
+    width: 150px;
   }
 }
 
@@ -274,8 +297,9 @@ header.big .muted {
 
 main {
   position: relative;
-  /*background: linear-gradient(to right, rgba(0, 0, 0, 0), #333 1000px, #333);*/
+  background: #fff;
   border-bottom: 1px solid rgba(0, 0, 0, 0);  /* against collapsing borders */
+  box-shadow: #ccc 0 0 25px;
 }
 
 main::before {
@@ -304,9 +328,20 @@ header {
 
 header.big {
   height: 200px;
+  flex-direction: column;
+  position: relative;
+}
+
+header.big::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
   background: url(../../build/kainuu/suomussalmi/i/20200825-DSC_0160-Pano.2x.jpg) 50% 60% no-repeat;
   background-size: cover;
-  flex-direction: column;
+  opacity: 0.6;
 }
 
 .title-link {
@@ -316,9 +351,10 @@ header.big {
 
 .main-title {
   display: inline-block;
-  border: 3px solid;
+  border: 1px solid #fff;
+  outline: 2px solid #64382C;
   background-color: #64382C;
-  color: #fff;
+  color: #222;
   padding: 5px;
   border-radius: 7px;
 }
@@ -349,10 +385,11 @@ header.big {
 }
 
 header nav {
-  font-size: 20px;
+  font-size: 15px;
   margin-left: 15px;
-  line-height: 1.4;
+  line-height: 1.2;
   color: #444;
+  z-index: 1;
 }
 
 header.big nav {
@@ -370,6 +407,14 @@ header nav a {
 }
 
 header nav a.active {
+  color: #000;
+}
+
+header.big nav a:hover {
+  color: #ddd;
+}
+
+header.big nav a.active {
   color: #fff;
 }
 
@@ -387,23 +432,19 @@ footer {
   width: 100%;
   margin: auto;
   min-height: 76px;
+  background: #e0e0e0;
 }
 
 footer p {
   text-align: center;
   font-size: 20px;
-  color: #888;
+  color: #666;
   margin: 0;
   align-self: stretch;
 }
 
 footer p a {
-  color: #888;
-}
-
-.image-gallery-image {
-  border: 4px solid #222;
-  box-sizing: border-box;
+  color: #666;
 }
 
 /* Mobile, Tablet */
@@ -415,7 +456,12 @@ footer p a {
   header.big {  
     height: 104px;
   }
-  
+
+  .main-title {
+    margin-top: 2px;
+    margin-bottom: 3px;
+  }
+
   .big .main-title {
     padding: 5px;
   }
@@ -436,8 +482,9 @@ footer p a {
   }
 
   .main-title {
-    border: 2.5px solid;
+    margin-top: 1px;
     padding: 2.5px;
+    outline-width: 1px;
     border-radius: 3.5px;
   }
 
@@ -477,7 +524,7 @@ footer p a {
   }
   
   header.big nav {
-    font-size: 14px;
+    font-size: 12px;
   }  
 
   footer {
@@ -489,263 +536,175 @@ footer p a {
   }
 }
 
-/* Map view stuff */
+/* Gallery stuff */
 
-.map-fullsize {
-  width: 100%;
+.glider-image {
   position: relative;
+  text-align: center;
 }
 
-.map-fullsize > .leaflet-container {
-  width: 100%;
-  height: 100%;
-}
-
-.leaflet-control-attribution {
-  padding-right: 33.33vw !important;
-}
-
-.leaflet-div-icon {
-  background: none !important;
-  border: none !important;
-  color: #444;
-  text-shadow: #000 0 0 3px, #000 0 0 3px, #000 0 0 3px;
-  font-size: 20px;
-}
-
-.custom-icon {
-  -webkit-filter: drop-shadow(0 0 5px black); filter: drop-shadow(0 0 5px black); padding: 5px;
-}
-
-.map-mini {
-  width: 100%;
-  position: relative;
-}
-
-.map-mini::before {
-  content: "";
-  padding-top: 100%;
-  display: block;
-}
-
-.map-mini .leaflet-container {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-}
-
-.map-mini .leaflet-control-attribution {
-  padding-right: 0 !important;
-}
-
-/* Mobile */
-@media (max-width: 767px) {
-  .leaflet-control-attribution {
-    padding-right: 0 !important;
-    font-size: 8px;
-  }
-}
-
-/* Map page stuff */
-
-.body-map {
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.body-map > div {
-  flex-grow: 1;
-  display: flex;
-}
-
-.map-side-pane {
-  position: absolute;
-  top: 0;
-  left: 67vw;
-  width: 33vw;
-  height: 100%;
-  z-index: 1000;
-  background: rgba(0, 0, 0, 0.8);
-  color: #ccc;
-  overflow: scroll;
-}
-
-.map-side-pane-inner {
-  padding: 10px;
-}
-
-.map-side-pane h1 {
-  text-shadow: 0 0 10px #000;
-  line-height: 1;
-  font-size: 44px;
-  margin: 0 0 5px 0;
-}
-
-.map-side-pane h1 a {
+.glider-prev, .glider-next, .glider-external-link {
   color: #fff;
-  text-decoration: underline;
+  text-shadow: #000 0 0 7px, #000 0 0 7px;
 }
 
-.map-side-pane h1 a:hover {
-  color: #eee;
+.glider-external-link {
+  position: absolute;
+  right: 20px;
+  top: 10px;
+  font-size: 20px;
+  display: inline-block;
+  user-select: all;
+  z-index: 1;
 }
 
-.map-side-pane .loading {
-  text-align: center;
-  font-size: 40px;
+.glider-prev {
+  left: 5px;
+  top: calc(50% - 40px);
 }
 
-.map-side-pane .subtitle {
-  text-align: center;
-  margin: 0;
+.glider-next {
+  right: 5px;
+  top: calc(50% - 40px);
 }
 
-.map-side-pane figure {
-  left: auto;
-  width: auto;
-}
-
-.body-map footer {
-  display: none;
-}
-
-/* Mobile */
-@media (max-width: 767px) {
-  .body-map .leaflet-container {
-    height: 100vw;
-  }
-
-  .map-side-pane {
-    position: static;
-    width: 100%;
-    height: auto;
-    background: none;
-  }
-}
-
-/* POI stuff */
-
-.body-poi main {
-  max-width: 1440px;
+.glider-image-wrap {
+  width: fit-content;
   margin: auto;
-  padding: 0 20px;
-  display: grid;
-  grid-template-columns: 33% auto;
-  grid-template-rows: auto auto auto auto 100%;
-  align-items: start;
-  column-gap: 40px;
+  position: relative;
 }
 
-.poi-logo {
-  grid-column: 1;
-  grid-row-start: 1;
-  grid-row-end: span 2;
-  align-self: center;
-  line-height: 1;
-  text-align: right;
-}
-
-.poi-title {
-  grid-column: 2;
-  grid-row: 1;
-}
-
-.body-poi hr {
-  grid-column-start: 1;
-  grid-column-end: span 2;
-  width: 100%;
-  color: #444;
-  grid-row: 3;
-}
-
-.poi-subtitle {
-  grid-column: 2;
-  grid-row: 2;
+.glider-image-wrap p {
+  position: absolute;
+  bottom: 35px;
+  left: 0;
+  margin: 0;
+  padding: 2px 5px;
+  background-color: rgba(0, 0, 0, 0.66);
+  color: #fff;
   font-style: italic;
   text-align: left;
-  margin: 0 5px;
+  max-width: 80%;
 }
 
-.poi-description {
-  grid-column: 2;
-  grid-row: 4;
-  min-width: 0;
+.glider-image-wrap img {
+  /* TODO: doesn't work well for tablet sizes (if there are vertical pictures in the glider, there is some white
+     remaining at the bottom of horizontal ones).  Not critical */
+  max-height: calc(min(100vw * 2 / 3, 677px));
 }
 
-h1.poi-title {
-  line-height: 1;
+/* Gallery - mobile */
+@media(max-width: 767px) {
+  .glider-contain {
+    margin-left: -20px;
+    margin-right: -20px;
+    width: 100vw;
+  }
+
+  .glider-image-wrap p {
+    font-size: 10px;
+  }
+}
+
+/* Map view stuff */
+
+.mapview-wrapper .leaflet-container {
+  height: calc(100vh - 250px);
+  width: 100%;
+}
+
+.mapview-wrapper.with-aside {
+  display: flex;
+  flex-direction: row;
+}
+
+.mapview-wrapper.with-aside .leaflet-container {
+}
+
+.mapview-wrapper.with-aside .mapview-aside {
+  width: 33%;
+  margin-left: 20px;
+  line-height: 1.4;
+}
+
+.map-popup h4 {
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 0;
   text-align: left;
-  margin: 10px 0 0 0;
 }
 
-.poi-description h2 {
-  line-height: 1.2;
-  text-align: left;
-  font-size: 24px;
+.map-popup h4 a {
+  color: #000;
 }
 
-.poi-map-and-data {
-  grid-column: 1;
-  grid-row-start: 4;
-  grid-row-end: span 2;
+.map-popup-subtitle {
+  font-style: italic;
 }
 
-.poi-map-and-data p {
-  margin: 10px auto;
-}
-
-.poi-main {
-  grid-column: 2;
-  grid-row: 5;
-  min-width: 0;
-}
-
-.poi-main h2, .poi-main h3 {
-  text-align: left;
-  color: #fff;
-  border-bottom: 1px solid #888;
-  margin-top: 20px;
-}
-
-.poi-main figure {
-  width: auto;
-  left: auto;
+.map-popup img {
   max-width: 100%;
 }
 
+.map-popup p {
+  margin: 10px auto;
+}
+
+.mapview-zoom-notice {
+  background: rgba(100, 56, 44, 0.8);
+  box-shadow: #000 0 0 5px, #000 0 0 5px;
+  color: #fff;
+  font-size: 20px;
+  font-weight: bold;
+  width: 300px;
+  margin: auto;
+  text-align: center;
+}
+
+.leaflet-popup-pane {
+  z-index: 1001;
+}
+
 /* Mobile */
 @media (max-width: 767px) {
-  .body-poi main {
-    display: block;
+  .mapview-wrapper .leaflet-container {
+    height: calc(100vh - 200px);
   }
 
-  .poi-description h2 {
-    font-size: 14px;
+  .leaflet-control-attribution {
+    font-size: 8px;
   }
 
-  .poi-logo {
-    float: right;
+  .map-popup p {
+    font-size: 10px;
   }
 
-  .poi-logo .custom-icon {
-    height: 50px;
+  .mapview-wrapper.with-aside {
+    flex-direction: column;
   }
 
-  .poi-subtitle {
+  .mapview-wrapper.with-aside .mapview-aside {
+    width: 100%;
     margin: 0;
+  }
+
+  .mapview-zoom-notice {
+    font-size: 16px;
+    width: 180px;
   }
 }
 
 /* Article and blog stuff */
 
 .article-main, .post-main, .blog-main {
-  padding: 0 10px;
-  max-width: 860px;
+  padding: 0 40px;
+  max-width: 1000px;
   margin: auto;
+  clear: both;
+}
+
+.post-main > article {
+  padding-top: 1px;
 }
 
 .blog-main {
@@ -754,7 +713,7 @@ h1.poi-title {
 
 .article-main h2, .post-main h2, .blog-main h2, .article-main h3, .post-main h3, .blog-main h3 {
   text-align: left;
-  color: #fff;
+  color: #000;
   border-bottom: 1px solid #888;
   margin-top: 20px;
 }
@@ -769,7 +728,7 @@ h1.article-title {
   display: inline-block;
   text-align: left;
   line-height: 1.2;
-  color: #888;
+  color: #aaa;
   margin-left: 40px;
 }
 
@@ -844,7 +803,6 @@ h4 .time::before, h4 .place::before, h4 .prev::before, h4 .next::before {
 }
 
 .post-list-entry-titleimage img {
-  border: 4px solid #222;
   width: 100%;
 }
 
@@ -906,6 +864,7 @@ h4 .time::before, h4 .place::before, h4 .prev::before, h4 .next::before {
   background-size: cover;
   left: calc(-50vw + 50%);
   width: 100vw;
+  z-index: 1;
 }
 
 .body-blog .post-heading-no-pic.blog-heading {
@@ -915,7 +874,6 @@ h4 .time::before, h4 .place::before, h4 .prev::before, h4 .next::before {
 
 .body-blog .post-heading {
   height: 25vw;
-  border: 4px solid black;
 }
 
 .post-heading-no-pic {
@@ -953,7 +911,7 @@ h4 .time::before, h4 .place::before, h4 .prev::before, h4 .next::before {
 }
 
 .post-title {
-  background: linear-gradient(transparent, rgba(0, 0, 0, 1));
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.75));
   text-align: center;
   margin: 0;
   padding: 10px;
@@ -967,6 +925,7 @@ h4 .time::before, h4 .place::before, h4 .prev::before, h4 .next::before {
   max-width: 80%;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: #fff;
 }
 
 .body-blog .post-heading-no-pic .post-title {
@@ -1012,6 +971,10 @@ nav.navigation {
 
 /* Mobile */
 @media (max-width: 767px) {
+  .article-main, .post-main, .blog-main {
+    padding: 0 20px;
+  }
+  
   .body-blog .post-heading {
     height: 33vh;
   }
@@ -1061,5 +1024,37 @@ nav.navigation {
   
   .post-heading-coatsofarms img {
     width: calc(var(--width) / 2);
+  }
+}
+
+.ukraine-banner {
+  display: flex;
+  flex-direction: row;
+  padding-top: 10px;
+  align-items: center;
+  width: fit-content;
+  margin: auto;
+}
+
+.ukraine-banner > img {
+  width: 100px;
+  height: 67px;
+  margin-right: 10px;
+  margin-bottom: 0;
+  flex-grow: 0;
+}
+
+.ukraine-banner > div {
+  flex-grow: 0;
+}
+
+@media (max-width: 767px) {
+  .ukraine-banner > div {
+    font-size: smaller;
+  }
+
+  .ukraine-banner > img {
+    width: 39px;
+    height: 26px;
   }
 }

@@ -2,15 +2,13 @@ import * as React from 'react';
 import {ReactElement} from 'react';
 import * as path from 'path';
 import * as fs from 'fs';
-import {renderToStaticMarkup, renderToString} from 'react-dom/server';
+import {renderToStaticMarkup} from 'react-dom/server';
 import cheerio from 'cheerio';
 import {Feed} from 'feed';
 import {AUTHOR, COPYRIGHT, FAVICON, LANGUAGES, MAIN_TITLE, PUBLIC_BASE, RSS_DESCRIPTION} from '../const';
 import {contentMap, formatText} from './content';
-import {COMPONENT_MAP} from '../components/components';
 import {Post} from '../contentTypes';
-import _ from '../l10n';
-import { getBuildDir, pathResolve } from './paths';
+import {getBuildDir, pathResolve} from './paths';
 
 /**
  * Finds all language versioins of a content item.
@@ -18,7 +16,7 @@ import { getBuildDir, pathResolve } from './paths';
  * @param {string} name
  * @param {string} type
  */
-export const getLanguageVersionURLs = (name: string, type: 'maps' | 'pois' | 'articles' | 'posts'): {[lang: string]: string} => {
+export const getLanguageVersionURLs = (name: string, type: 'articles' | 'posts'): {[lang: string]: string} => {
     const result: {[lang: string]: string} = {};
     const pathMap = {
         maps: 'map',
@@ -30,8 +28,10 @@ export const getLanguageVersionURLs = (name: string, type: 'maps' | 'pois' | 'ar
         if (contentMap[lang] && contentMap[lang][type][name]) {
             if (type === 'posts') {
                 result[lang] = getPostLink(name, lang);
-            } else if (name === 'index') {
-                result[lang] = `/${lang}/${pathMap[type]}/`;
+            } else if (type === 'articles' && name === 'index') {
+                result[lang] = `/${lang}/`;
+            } else if (type === 'articles' && name.startsWith('index-')) {
+                result[lang] = `/${lang}/${name.replace('index-', '')}/`;
             } else {
                 result[lang] = `/${lang}/${pathMap[type]}/${name}/`
             }
@@ -49,11 +49,12 @@ export const getPostLink = (name: string, lang: string) => {
     return `/${lang}/${matchPost[1]}/${matchPost[2]}/${matchPost[3]}/${matchPost[4]}/`;
 }
 
-export const getBlogLink = (page: number, lang: string) => {
+export const getBlogLink = (category: string, page: number, lang: string) => {
+    const prefix = category === '' ? `/${lang}/` : `/${lang}/${category}/` 
     if (page <= 1) {
-        return `/${lang}/`;
+        return prefix;
     }
-    return `/${lang}/${page}/`;
+    return `${prefix}${page}/`;
 }
 
 export const getImageLink = (path: string, size: string) => {
@@ -156,39 +157,14 @@ export const renderFeed = (lang: string, posts: Post[]) => {
 }
 
 /**
- * Renders any page to static markup with possible client-hydratable components, denoted as
- * <div class="__ssr" data-component-type="..." data-component-props="{foo: bar...}" />.
+ * Renders any page to static markup.
  *
  * @param page
  */
 export const renderPage = (page: ReactElement) => {
     // Render fully-static page
     let html = renderToStaticMarkup(page);
-
-    // Render hydratable SSR components
-    const $ = cheerio.load(html, {decodeEntities: false});
-    $('.__ssr').each((k, el) => {
-        if (el.type !== 'tag') {  // never true, just to make TS happy
-            return;
-        }
-        
-        const type = el.attribs['data-component-type'], props = el.attribs['data-component-props'];
-
-        const Component = COMPONENT_MAP[type];
-        if (!Component) {
-            throw new Error(`Unknown/missing <component> type: ${type}`);
-        }
-
-        // render it
-        let renderedComponent = renderToString(<Component {...JSON.parse(props)} />);
-
-        // Props are base64-encoded JSON, it's an easiest way to make this play nice with
-        // decodeEntities=false in cheerio (and with all the &quot; involved probably this doesn't even waste much space)
-        $(el).attr('data-component-props', Buffer.from(props).toString('base64'));
-        $(el).append(renderedComponent);
-    })
-    html = `<!DOCTYPE html>${$.html()}`;
-
+    html = `<!DOCTYPE html>${html}`;
     return html;
 }
 

@@ -1,13 +1,12 @@
 import * as webpack from 'webpack';
 import * as path from 'path';
-import TerserJSPlugin from 'terser-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
 const config: webpack.Configuration = {
 
     mode: 'production',
 
-    entry: path.resolve(__dirname, './main.tsx'),
+    entry: path.resolve(__dirname, './main.ts'),
 
     output: {
         path: path.resolve(__dirname, '../../build/static'),
@@ -16,10 +15,6 @@ const config: webpack.Configuration = {
 
     devtool: 'source-map',
     
-    optimization: {
-        minimizer: [new TerserJSPlugin()]
-    },
-
     plugins: [
         new MiniCssExtractPlugin({
             filename: 'style.[hash].css',

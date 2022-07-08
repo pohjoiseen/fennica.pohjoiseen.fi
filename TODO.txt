@@ -1,3 +1,18 @@
+* Finish redesign (already started before)
+* Add categories (Places, Walks, Stories, Facts)
+  - Front page per category /ru/places/ etc.
+* Add tags (various)
+  - Tags list page /ru/tags/cities/ etc.
+* Add coordinates to all existing pages
+* Add maps to front page, to categories pages
+* Redesign top menu
+* Update About pages
+* Add link to Finnish version (and make it default?)
+* Add maps to front page, category pages for places and walks
+* Add new few places posts
+* Create Facebook page
+
+
 Remaining features
 ------------------
 

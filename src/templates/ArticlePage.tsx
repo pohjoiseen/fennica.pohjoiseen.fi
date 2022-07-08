@@ -6,7 +6,7 @@ import {Article} from '../contentTypes';
 import {Layout} from './Layout';
 import {getLanguageVersionURLs} from '../generator/util';
 import _ from '../l10n';
-import {Content} from '../components/Content';
+import {HTML} from '../generator/HTML';
 
 export interface ArticlePageProps {
     lang: string;
@@ -42,7 +42,7 @@ export const ArticlePage = (props: ArticlePageProps) => {
             <h1 className="article-title">{article.data.title}</h1>
             <hr />
             <article className="article-main">
-                <Content content={article.content} lang={lang} />
+                <HTML content={article.content} lang={lang} />
                 {article.data.updated && <p><i>{_('Up to date as of', lang)}: {article.data.updated}</i></p>}
             </article>
         </main>

@@ -4,7 +4,7 @@
 import * as React from 'react';
 import chalk from 'chalk';
 import chokidar from 'chokidar';
-import express from 'express';
+import express, {NextFunction, Request, Response} from 'express';
 import morgan from 'morgan';
 import webpack from 'webpack';
 import webpackDevMiddleware from 'webpack-dev-middleware';
@@ -16,13 +16,11 @@ import {
     articleContent,
     handleModifyContent,
     handleRemoveContent,
-    mapContent,
-    poiContent, postContent, postsOrdered
+    postContent,
+    postsOrdered
 } from './content';
 import {DEVSERVER_PORT, LANGUAGES, POSTS_PER_PAGE} from '../const';
 import {renderFeed, renderPage} from './util';
-import {MapPage} from '../templates/MapPage';
-import {PlacePage} from '../templates/PlacePage';
 import {ArticlePage} from '../templates/ArticlePage';
 import {PostPage} from '../templates/PostPage';
 import {BlogPage} from '../templates/BlogPage';
@@ -66,46 +64,6 @@ export const runServer = () => {
     const compiler = webpack(webpackConfig);
     app.use(webpackDevMiddleware(compiler, {publicPath: '/static', index: false, serverSideRender: true}));
 
-    // Map pages
-    app.get('/:lang/map/:name?/', (req, res) => {
-        const name = req.params.name || 'index';
-        if (mapContent[req.params.lang] && mapContent[req.params.lang][name]) {
-            const map = mapContent[req.params.lang][name];
-            res.setHeader('Content-Type', 'text/html; charset=utf-8');
-            res.send(renderPage(<MapPage lang={req.params.lang} map={map} bundlePath="/static/bundle.js" />));
-        }
-    });
-
-    // POI pages
-    app.get('/:lang/place/:name/', (req, res, next) => {
-        if (req.params.name.indexOf('.json') === req.params.name.length - 5) {
-            next();
-            return;
-        }
-
-        if (poiContent[req.params.lang] && poiContent[req.params.lang][req.params.name]) {
-            const poi = poiContent[req.params.lang][req.params.name];
-
-            // find out mini-map to display
-            let owningMap = 'index';
-            if (poi.data.map) {
-                if (typeof poi.data.map === 'string') {
-                    owningMap = poi.data.map;
-                } else {
-                    owningMap = poi.data.map[0];
-                }
-            }
-            const map = mapContent[req.params.lang][owningMap];
-            const parent = poi.data.parent ? poiContent[req.params.lang][poi.data.parent] : undefined;
-            res.setHeader('Content-Type', 'text/html; charset=utf-8');
-            res.send(renderPage(<PlacePage
-                lang={req.params.lang}
-                poi={poi} map={map} parent={parent}
-                bundlePath="/static/bundle.js"
-            />));
-        }
-    });
-
     // Article pages
     app.get('/:lang/article/:name?/', (req, res) => {
         const name = req.params.name || 'index';
@@ -133,28 +91,35 @@ export const runServer = () => {
     });
 
     // Blog pages
-    app.get('/:lang/:page(\\d+)?/', (req, res, next) => {
+    const blogPage = (category: string, req: Request, res: Response, next: NextFunction) => {
         const page = Number(req.params.page) || 1, lang = req.params.lang;
         // this route will also catch something like /favicon.ico, make sure it's really a valid language
         if (!LANGUAGES.includes(lang)) {
             next();
             return;
         }
-        const totalPages = Math.ceil(postsOrdered[lang].length / POSTS_PER_PAGE);
+
+        const articleName = category === '' ? 'index' : 'index-' + category;
+        const article = articleContent[req.params.lang][articleName];
+        const totalPages = Math.ceil(postsOrdered[category][lang].length / POSTS_PER_PAGE);
         if (page >= 1 && page <= totalPages) {
-            const posts = postsOrdered[lang]
+            const posts = postsOrdered[category][lang]
                 .slice((page - 1) * POSTS_PER_PAGE, page * POSTS_PER_PAGE)
                 .map(postName => postContent[lang][postName]);
             res.setHeader('Content-Type', 'text/html; charset=utf-8');
-            res.send(renderPage(<BlogPage lang={req.params.lang} posts={posts} page={page} totalPages={totalPages}
-                                        bundlePath="/static/bundle.js" />));
+            res.send(renderPage(<BlogPage lang={req.params.lang} category={category}
+                                          article={article} posts={posts} page={page} totalPages={totalPages}
+                                          bundlePath="/static/bundle.js" />));
         }
-    });
+    };
+
+    app.get('/:lang/:category/:page(\\d+)?/', (req, res, next) => blogPage(req.params.category, req, res, next));
+    app.get('/:lang/:page(\\d+)?/', (req, res, next) => blogPage('', req, res, next));
 
     // Blog RSS
     app.get('/:lang/rss.xml', (req, res) => {
         const lang = req.params.lang;
-        const posts = postsOrdered[lang]
+        const posts = postsOrdered[''][lang]
             .slice(0, POSTS_PER_PAGE)
             .map(postName => postContent[lang][postName]);
         res.setHeader('Content-Type', 'text/xml; charset=utf-8');

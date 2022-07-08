@@ -4,30 +4,32 @@
 import * as React from 'react';
 import {Fragment} from 'react';
 import {range} from 'lodash';
-import {Post} from '../contentTypes';
+import {Article, Post} from '../contentTypes';
 import {Layout} from './Layout';
 import {formatPostDate, getBlogLink, getImageLink, getPostLink} from '../generator/util';
 import _ from '../l10n';
-import {Content} from '../components/Content';
+import {HTML} from '../generator/HTML';
 import {LANGUAGES} from '../const';
 import {normalizeCoatsOfArms} from './util';
 
 export interface BlogPageProps {
     lang: string;
+    category: string;
     bundlePath: string;
     cssPath?: string;
+    article?: Article;
     posts: Post[];
     page: number;
     totalPages: number;
 }
 
-const Pagination = (props: {lang: string, thisPage: number, totalPages: number}) => {
-    const {lang, thisPage, totalPages} = props;
+const Pagination = (props: {lang: string, category: string, thisPage: number, totalPages: number}) => {
+    const {lang, category, thisPage, totalPages} = props;
     if (totalPages < 2) {
         return null;
     }
 
-    let pages: number[] = [];
+    let pages: number[];
     if (totalPages < 11) {
         pages = range(1, totalPages + 1);
     } else if (thisPage <= 6) {
@@ -41,7 +43,7 @@ const Pagination = (props: {lang: string, thisPage: number, totalPages: number})
     return <nav className="navigation pagination" role="navigation">
         <h2 className="screen-reader-text">Pages</h2>
         <div className="nav-links">
-            {thisPage !== 1 && <><a className="prev page-numbers" href={getBlogLink(thisPage - 1, lang)}><span
+            {thisPage !== 1 && <><a className="prev page-numbers" href={getBlogLink(category, thisPage - 1, lang)}><span
                 className="screen-reader-text">Previous</span><i className="fas fa-arrow-left" /></a> </>}
             {pages.map(page => {
                 if (!page) {
@@ -50,17 +52,17 @@ const Pagination = (props: {lang: string, thisPage: number, totalPages: number})
                 if (page === thisPage) {
                     return <span key={page} aria-current="page" className="page-numbers current">{page} </span>;
                 }
-                return <Fragment key={page}> <a className="page-numbers" href={getBlogLink(page, lang)}><span
+                return <Fragment key={page}> <a className="page-numbers" href={getBlogLink(category, page, lang)}><span
                     className="meta-nav screen-reader-text">Page </span>{page}</a> </Fragment>;
             })}
-            {thisPage !== totalPages && <> <a className="next page-numbers" href={getBlogLink(thisPage + 1, lang)}><span
+            {thisPage !== totalPages && <> <a className="next page-numbers" href={getBlogLink(category, thisPage + 1, lang)}><span
                 className="screen-reader-text">Next</span><i className="fas fa-arrow-right" /></a></>}
         </div>
     </nav>;
 };
 
 export const BlogPage = (props: BlogPageProps) => {
-    const {lang, bundlePath, cssPath, posts, page, totalPages} = props;
+    const {lang, category, bundlePath, cssPath, posts, article, page, totalPages} = props;
     const languageVersions: {[lang: string]: string} = {};
     for (let language of LANGUAGES) {
         languageVersions[language] = `/${language}/`;
@@ -77,18 +79,9 @@ export const BlogPage = (props: BlogPageProps) => {
         bigHeaderPage="blog"
     >
         <main className="blog-main">
-            {lang === 'en' && <blockquote>
-                As of May 2021, I am no longer updating the English version of this blog.  Over the past few
-                years its popularity has lagged much behind the Russian version (itself quite a niche website as well),
-                and translating all posts adds
-                to the writing burden considerably.  I hope however that I can publish more in English (or even Finnish)
-                eventually, but probably in some different format (for example a guide into some area of Finland,
-                which I might eventually compile from these travel notes).
-            </blockquote>}
-            {lang === 'fi' && <blockquote>
-                Tällä hetkellä en säännöllisesti kirjoita blogia suomeksi.  Tässä on vain muutama käännös, ja ulkoisia
-                linkkejä tälle sivulle ei ole.  Tulevaisuudessa saatan kuitenkin kirjoittaa enemmän.
-            </blockquote>}
+            {page === 1 && article && <article className="article-main" style={{overflow: 'hidden'}}>
+                <HTML content={article.content} lang={lang} />
+            </article>}
             {posts.map(post => {
                 const coatsOfArms = normalizeCoatsOfArms(post.data.coatOfArms);
                 return <article key={post.name} className="post-list-entry">
@@ -106,12 +99,12 @@ export const BlogPage = (props: BlogPageProps) => {
                             </div>}
                         </div>
                         {post.data.description && <p className="post-list-entry-description">
-                            <Content content={post.data.description} lang={lang} /> 
+                            <HTML content={post.data.description} lang={lang} /> 
                         </p>}
                     </div>
                 </article>
             })}
-            <Pagination lang={lang} thisPage={page} totalPages={totalPages} />
+            <Pagination category={category} lang={lang} thisPage={page} totalPages={totalPages} />
         </main>
     </Layout>;
 }

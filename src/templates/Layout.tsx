@@ -95,19 +95,25 @@ export const Layout = (props: LayoutProps) => {
 
     <body className={bodyClass}>
     <header role="banner" className={bigHeaderPage ? 'big' : ''}>
-        <a className="title-link main-title" href="/">
+        <a className="title-link main-title" href={`/${lang}/`}>
             <img alt="Encyclopaedia Fennica" src="/static/logo.svg" />
         </a>
         <nav>
             {bigHeaderPage ? <>
                 {lang === 'ru' && <><a href={`/${lang}/`} className={bigHeaderPage === 'blog' ? 'active' : ''}>{_('Blog', lang)}</a> | <a
                    href={`/${lang}/article/contents/`} className={bigHeaderPage === 'contents' ? 'active' : ''}>{_('Contents', lang)}</a> | <a
-                   href={`/${lang}/article/about/`} className={bigHeaderPage === 'about' ? 'active' : ''}>{_('About Website', lang)}</a> |</>} {languageVersions['en']
+                   href={`/${lang}/article/about/`} className={bigHeaderPage === 'about' ? 'active' : ''}>{_('About Website', lang)}</a> |</>} {languageVersions['fi']
+                    ? <a href={languageVersions['fi']} className={lang === 'fi' ? 'active' : ''}>Suomi</a>
+                    : <span className="muted">Suomi</span>}/{languageVersions['en']
                     ? <a href={languageVersions['en']} className={lang === 'en' ? 'active' : ''}>English</a>
                     : <span className="muted">English</span>}/{languageVersions['ru']
                     ? <a href={languageVersions['ru']} className={lang === 'ru' ? 'active' : ''}>Русский</a>
                     : <span className="muted">Русский</span>}
             </> : <>
+                {languageVersions['fi']
+                    ? <a href={languageVersions['fi']} className={lang === 'fi' ? 'active' : ''}>FIN</a>
+                    : <span className="muted">FIN</span>}
+                <hr />
                 {languageVersions['en']
                     ? <a href={languageVersions['en']} className={lang === 'en' ? 'active' : ''}>ENG</a>
                     : <span className="muted">ENG</span>}
@@ -137,7 +143,7 @@ export const Layout = (props: LayoutProps) => {
         </p>}
         <p>
             {COPYRIGHT} <a href={FOOTER_HREF}>{AUTHOR}</a>{' '}
-            <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/deed.en">CC BY-NC-SA</a>
+            <a href="https://creativecommons.org/licenses/by-nd/4.0/">CC BY-ND</a>
         </p>
     </footer>}
 

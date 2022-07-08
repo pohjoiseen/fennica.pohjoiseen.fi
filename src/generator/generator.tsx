@@ -5,15 +5,9 @@ import * as React from 'react';
 import chalk from 'chalk';
 import webpack from 'webpack';
 import webpackConfig from '../client/webpack.config.prod';
-import {
-    articleContent,
-    mapContent,
-    poiContent, postContent, postsOrdered
-} from './content';
+import {articleContent, postContent, postsOrdered} from './content';
 import {LANGUAGES, POSTS_PER_PAGE} from '../const';
 import {getPostLink, outputFeed, outputPage} from './util';
-import {MapPage} from '../templates/MapPage';
-import {PlacePage} from '../templates/PlacePage';
 import {ArticlePage} from '../templates/ArticlePage';
 import {PostPage} from '../templates/PostPage';
 import {BlogPage} from '../templates/BlogPage';
@@ -36,63 +30,33 @@ export const runGenerator = () => {
             process.exit(-1);
         }
         
-        const info = stats.toJson();
-        if (stats.hasErrors()) {
-            info.errors.forEach(err => console.error(chalk.redBright(err)));
+        const info = stats!.toJson();
+        if (stats!.hasErrors()) {
+            info.errors!.forEach(err => console.error(chalk.redBright(err.message)));
             console.error('Webpack build error, not continuing');
             process.exit(-1);
         }
-        if (stats.hasWarnings()) {
-            info.warnings.forEach(err => console.warn(chalk.yellowBright(err)));
+        if (stats!.hasWarnings()) {
+            info.warnings!.forEach(err => console.warn(chalk.yellowBright(err.message)));
         }
         
-        const bundlePath = `/static/bundle.${stats.hash}.js`, cssPath = `/static/style.${stats.hash}.css`;
+        const bundlePath = `/static/bundle.${stats!.hash}.js`, cssPath = `/static/style.${stats!.hash}.css`;
         
         for (let lang of LANGUAGES) {
-            // Map pages
-            if (mapContent[lang]) {
-                console.log(`Generating step: ${chalk.greenBright(`outputting maps for language ${lang}`)}`);
-                for (let map of Object.values(mapContent[lang])) {
-                    const outpath = map.name === 'index' ? `/${lang}/map/` : `/${lang}/map/${map.name}/`;
-                    outputPage(<MapPage lang={lang} map={map} bundlePath={bundlePath} cssPath={cssPath} />, outpath);
-                }
-            }
-
-            // POI pages
-            if (poiContent[lang]) {
-                console.log(`Generating step: ${chalk.greenBright(`outputting POIs for language ${lang}`)}`);
-                for (let poi of Object.values(poiContent[lang])) {
-                    // find out mini-map to display
-                    let owningMap = 'index';
-                    if (poi.data.map) {
-                        if (typeof poi.data.map === 'string') {
-                            owningMap = poi.data.map;
-                        } else {
-                            owningMap = poi.data.map[0];
-                        }
-                    }
-                    const map = mapContent[lang][owningMap];
-                    const parent = poi.data.parent ? poiContent[lang][poi.data.parent] : undefined;
-                    const outpath = `/${lang}/place/${poi.name}/`;
-                    outputPage(<PlacePage
-                        lang={lang}
-                        poi={poi} map={map} parent={parent}
-                        bundlePath={bundlePath} cssPath={cssPath}
-                    />, outpath);
-                }
-            }
-            
             // Article pages
             if (articleContent[lang]) {
                 console.log(`Generating step: ${chalk.greenBright(`outputting articles for language ${lang}`)}`);
                 for (let article of Object.values(articleContent[lang])) {
+                    if (article.name === 'index' || article.name.startsWith('index-')) {
+                        continue;
+                    }
                     const prev = article.data.prev ? articleContent[lang][article.data.prev] : undefined;
                     const next = article.data.next ? articleContent[lang][article.data.next] : undefined;
-                    const outpath = article.name === 'index' ? `/${lang}/article/` : `/${lang}/article/${article.name}/`;
+                    const outpath = `/${lang}/article/${article.name}/`;
                     outputPage(<ArticlePage lang={lang} article={article} prev={prev} next={next}
                         bundlePath={bundlePath} cssPath={cssPath} />, outpath);
                 }
-            };
+            }
 
             // Post pages
             if (postContent[lang]) {
@@ -107,23 +71,33 @@ export const runGenerator = () => {
             }
 
             // Blog pages and feeds
-            const totalPages = Math.ceil(postsOrdered[lang].length / POSTS_PER_PAGE);
-            if (totalPages > 0) {
-                console.log(`Generating step: ${chalk.greenBright(`outputting blog pages and RSS feeds for language ${lang}`)}`);
-                for (let page = 1; page <= totalPages; page++) {
-                    const posts = postsOrdered[lang]
-                        .slice((page - 1) * POSTS_PER_PAGE, page * POSTS_PER_PAGE)
-                        .map(postName => postContent[lang][postName]);
-                    const outpath = page === 1 ? `/${lang}/` : `/${lang}/${page}/`;
-                    outputPage(<BlogPage lang={lang} posts={posts} page={page} totalPages={totalPages}
-                        bundlePath={bundlePath} cssPath={cssPath} />, outpath);
+            console.log(`Generating step: ${chalk.greenBright(`outputting blog pages and RSS feeds for language ${lang}`)}`);
+            for (const category of Object.keys(postsOrdered)) {
+                if (!postsOrdered[category][lang]) {
+                    continue;
                 }
-                
-                const posts = postsOrdered[lang]
-                    .slice(0, POSTS_PER_PAGE)
-                    .map(postName => postContent[lang][postName]);
-                outputFeed(lang, posts, `/${lang}/`);
+                const totalPages = Math.ceil(postsOrdered[category][lang].length / POSTS_PER_PAGE);
+                if (totalPages > 0) {
+                    const articleName = category === '' ? 'index' : 'index-' + category;
+                    const article = articleContent[lang][articleName];
+
+                    for (let page = 1; page <= totalPages; page++) {
+                        const posts = postsOrdered[category][lang]
+                            .slice((page - 1) * POSTS_PER_PAGE, page * POSTS_PER_PAGE)
+                            .map(postName => postContent[lang][postName]);
+                        const outpath = category
+                            ? (page === 1 ? `/${lang}/${category}/` : `/${lang}/${category}/${page}/`)
+                            : (page === 1 ? `/${lang}/` : `/${lang}/${page}/`)
+                        outputPage(<BlogPage lang={lang} category={category}
+                                             posts={posts} article={article} page={page} totalPages={totalPages}
+                                             bundlePath={bundlePath} cssPath={cssPath} />, outpath);
+                    }
+                }
             }
+            const posts = postsOrdered[''][lang]
+                .slice(0, POSTS_PER_PAGE)
+                .map(postName => postContent[lang][postName]);
+            outputFeed(lang, posts, `/${lang}/`);
         }
         
         console.log(chalk.magentaBright(`Generation finished successfully`));
