@@ -272,9 +272,11 @@ export function initMap(containerEl: HTMLElement) {
             
             onEachFeature(feature, layer) {
                 // popup with stub content, onMarkerClick() actually loads 
+                // closeButton=false because of https://issuehint.com/issue/Leaflet/Leaflet/8159
+                // TODO: fix when Leaflet is updated
                 layer.bindPopup(`<div id="map-popup-${(feature.id as string).replace('#', '-')}">
                     <div class="map-popup"><h4>${feature.properties.title}</h4><div id="map-popup-details">Loading...</div></div>
-                </div>`, {minWidth: popupWidth, maxWidth: popupWidth});
+                </div>`, {minWidth: popupWidth, maxWidth: popupWidth, closeButton: false});
             }
         })
     });

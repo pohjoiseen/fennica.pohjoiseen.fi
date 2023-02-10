@@ -247,6 +247,7 @@ export const formatText = (text: string, lang: string, basepath: string, multiPa
     if (lang === 'fi') {
         // for semicolons pretty much
         tp.disableRule('common/space/afterPunctuation');
+        tp.disableRule('common/space/afterColon');
     }
     text = tp.execute(text);
     text = text.replace(/^<html><head><\/head><body>/, '').replace(/<\/body><\/html>\s*$/, '');
