@@ -1,3 +1,5 @@
+## This old TS/NodeJS version of Fennica source is no longer used as of Feb 2023.  See [pohjoiseen](https://github.com/pohjoiseen/pohjoiseen) repo for new C#/.NET version.
+
 Encyclopaedia Fennica - source
 ==============================
 
